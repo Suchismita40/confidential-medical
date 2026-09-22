@@ -378,7 +378,7 @@ export function DatasetWorkspace() {
                 type="number"
                 min="1"
                 max="500"
-                value={regQuota}
+                value={regQuota} min={1} max={500}
                 onChange={(e) => setRegQuota(Number(e.target.value))}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slateSurface-border bg-midnight-950 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400/30"
                 required
@@ -456,7 +456,7 @@ export function DatasetWorkspace() {
                 type="number"
                 min="1"
                 max="200"
-                value={additionalQuota}
+                value={additionalQuota} min={1} max={500}
                 onChange={(e) => setAdditionalQuota(Number(e.target.value))}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slateSurface-border bg-midnight-950 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400/30"
                 required

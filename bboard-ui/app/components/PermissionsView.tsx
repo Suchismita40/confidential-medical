@@ -183,7 +183,7 @@ export function PermissionsView() {
                       <span>Smart Contract Circuit Action Binding</span>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div role="tablist" aria-label="Permission Status Filters" className="flex flex-wrap items-center gap-2">
                       {ds.status === 'REQUESTED' && (
                         <Button
                           variant="emerald"
@@ -272,7 +272,7 @@ export function PermissionsView() {
                 type="number"
                 min="1"
                 max="200"
-                value={extraQuota}
+                value={extraQuota} min={1} max={500}
                 onChange={(e) => setExtraQuota(Number(e.target.value))}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slateSurface-border bg-midnight-950 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400/30"
                 required
