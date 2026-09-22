@@ -371,43 +371,133 @@ The MedEx architecture comprises four primary layers:
 
 ### System Dataflow & Sequence Diagram
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Clinician as 🏥 Hospital Data Steward
-    actor Researcher as 🔬 Clinical Researcher
-    participant UI as 🖥️ MedEx Frontend (Next.js)
-    participant Lace as 👛 Midnight Lace Wallet
-    participant Prover as 🧩 Private Witness Prover
-    participant Ledger as 🛡️ Midnight Preprod Contract
+```text
+===================================================================================================
+                    MEDEX ZERO-KNOWLEDGE SYSTEM DATAFLOW & SEQUENCE SCHEMATIC
+===================================================================================================
 
-    Note over Clinician,Ledger: 1. Dataset Registration Flow
-    Clinician->>UI: Register Dataset (Title, Category, Quota=5)
-    UI->>Prover: Generate ZK Proof (registerDataset) using localSecretKey()
-    Prover->>Lace: Request Transaction Authorization
-    Lace->>Ledger: Submit Balanced ZK Transaction
-    Ledger-->>Ledger: Disclose owner PK, datasetTitle, datasetCategory (state=NONE)
-    Ledger-->>UI: Sync via GraphQL Indexer
+[ ACTORS ]                    [ CLIENT WORKSTATION ]             [ PROVING & WALLET ]            [ MIDNIGHT PREPROD ]
+🏥 Hospital Data Steward   →  🖥️ Next.js Web App (bboard-ui)  →  🧩 Local ZK-SNARK Prover  →     🛡️ Compact Smart Contract
+🔬 Clinical Researcher        📦 DeployedBoardContext            👛 Midnight Lace Wallet        📊 GraphQL Indexer & Ledger
 
-    Note over Researcher,Ledger: 2. Access Request & Credential Verification
-    Researcher->>UI: Request Cohort Access
-    UI->>Prover: Generate ZK Proof (requestAccess) proving medicalCredentialSecret != ""
-    Prover->>Lace: Sign & Submit ZK Transaction
-    Ledger-->>Ledger: Disclose activeResearcherPk (state=REQUESTED)
+───────────────────────────────────────────────────────────────────────────────────────────────────
+FLOW 1: CLINICAL DATASET REGISTRATION & ONBOARDING
+───────────────────────────────────────────────────────────────────────────────────────────────────
+1. Clinician enters dataset details  ──→  [ bboard-ui: New Dataset Modal ]
+                                          │
+                                          ├── Title: "Oncology BRCA1/2 Cohort"
+                                          ├── Category: "Genomics"
+                                          └── Initial Quota: 5 Queries
+                                          ↓
+2. Trigger circuit execution         ──→  [ DeployedBoardContext.registerDataset() ]
+                                          │
+                                          ├── Private Witness: localSecretKey() (kept secret)
+                                          ├── Pure Circuit: publicKey(sk, sequence)
+                                          ↓
+3. Synthesize ZK-SNARK proof         ──→  [ Local Prover + Proof Server (Plonk) ]
+                                          │
+                                          └── Proof inputs: { private: [sk], public: [title, category] }
+                                          ↓
+4. Balance & sign transaction        ──→  [ Midnight Lace: window.midnight.mnLace ]
+                                          │
+                                          └── Authorized via mn_addr_preprod1...
+                                          ↓
+5. Execute Compact circuit           ──→  [ bboard.compact: registerDataset() ]
+                                          │
+                                          ├── Assert: (state == State.NONE || state == State.REVOKED)
+                                          ├── Disclose: owner = publicKey(sk, seq)
+                                          ├── Disclose: datasetTitle = title, datasetCategory = category
+                                          └── State Mutation: state = State.NONE, datasetCount += 1
+                                          ↓
+6. Sync public ledger telemetry      ──→  [ Midnight GraphQL Indexer ] ──→ [ UI Live Telemetry Updated ]
 
-    Note over Clinician,Ledger: 3. Permission Granting
-    Clinician->>UI: Grant Access to Researcher
-    UI->>Prover: Generate ZK Proof (grantPermission) verifying owner match
-    Prover->>Lace: Sign & Submit Transaction
-    Ledger-->>Ledger: Transition state = GRANTED
+───────────────────────────────────────────────────────────────────────────────────────────────────
+FLOW 2: RESEARCHER ACCESS REQUEST & CREDENTIAL VERIFICATION
+───────────────────────────────────────────────────────────────────────────────────────────────────
+1. Researcher requests cohort access ──→  [ bboard-ui: Cohort Catalog ]
+                                          │
+                                          └── Dataset ID: e603362546ca...
+                                          ↓
+2. Supply medical credentials        ──→  [ DeployedBoardContext.requestAccess() ]
+                                          │
+                                          ├── Private Witness 1: localSecretKey()
+                                          ├── Private Witness 2: medicalCredentialSecret() (License Secret)
+                                          ↓
+3. Synthesize ZK Access Proof        ──→  [ Local Prover (Plonk ZK-SNARK) ]
+                                          │
+                                          ├── Assert: medicalCredentialSecret != "" (Verified in ZK)
+                                          └── Derive: activeResearcherPk = publicKey(sk, datasetId)
+                                          ↓
+4. Submit transaction via Lace       ──→  [ Midnight Lace Wallet ] ──→ [ bboard.compact: requestAccess() ]
+                                          │
+                                          ├── Disclose: activeResearcherPk
+                                          └── State Mutation: state = State.REQUESTED
+                                          ↓
+5. Sync permission status            ──→  [ Midnight GraphQL Indexer ] ──→ [ UI: Status = "REQUESTED" ]
 
-    Note over Researcher,Ledger: 4. Confidential Query Execution & Quota Enforcement
-    Researcher->>UI: Submit Access Proof (patientRecordHash)
-    UI->>Prover: Generate ZK Proof (submitAccessProof) with patientRecordKey()
-    Note over Prover,Ledger: Circuit asserts accessCount < maxAccessLimit
-    Prover->>Lace: Sign & Submit Transaction
-    Ledger-->>Ledger: Disclose lastProofHash, increment accessCount & auditLogCount
-    Ledger-->>UI: Audit Trail Updated
+───────────────────────────────────────────────────────────────────────────────────────────────────
+FLOW 3: DATASET OWNER PERMISSION GRANTING
+───────────────────────────────────────────────────────────────────────────────────────────────────
+1. Hospital steward reviews request  ──→  [ bboard-ui: Permissions & Quotas View ]
+                                          │
+                                          └── Pending Researcher PK: 0x3a7b...
+                                          ↓
+2. Authorize investigator on-chain   ──→  [ DeployedBoardContext.grantPermission() ]
+                                          │
+                                          ├── Private Witness: localSecretKey()
+                                          ↓
+3. Execute Compact circuit           ──→  [ bboard.compact: grantPermission() ]
+                                          │
+                                          ├── Assert: state == State.REQUESTED
+                                          ├── Assert: owner == publicKey(localSecretKey, sequence)
+                                          ├── Assert: activeResearcherPk == researcherPk
+                                          └── State Mutation: state = State.GRANTED
+                                          ↓
+4. Access grant finalized            ──→  [ Midnight GraphQL Indexer ] ──→ [ UI: Status = "GRANTED" ]
+
+───────────────────────────────────────────────────────────────────────────────────────────────────
+FLOW 4: CONFIDENTIAL ACCESS PROOF SUBMISSION & QUOTA ENFORCEMENT
+───────────────────────────────────────────────────────────────────────────────────────────────────
+1. Researcher queries clinical cohort──→  [ bboard-ui: Submit Access Proof ]
+                                          │
+                                          └── Input: patientRecordHash (32-byte clinical hash)
+                                          ↓
+2. Private witness key supply        ──→  [ DeployedBoardContext.submitAccessProof() ]
+                                          │
+                                          ├── Private Witness 1: localSecretKey()
+                                          ├── Private Witness 2: patientRecordKey() (Confidential EHR key)
+                                          ↓
+3. Synthesize rate-limited ZK proof  ──→  [ Local Prover (Plonk ZK-SNARK) ]
+                                          │
+                                          ├── Assert: state == State.GRANTED
+                                          ├── Assert: activeResearcherPk == publicKey(sk, datasetId)
+                                          ├── Assert: accessCount < maxAccessLimit (Quota Enforcement)
+                                          ├── Assert: patientRecordKey != ""
+                                          └── Derive: persistentHash([recordHash, patientRecordKey, researcherPk])
+                                          ↓
+4. Submit on-chain proof             ──→  [ bboard.compact: submitAccessProof() ]
+                                          │
+                                          ├── Disclose: lastProofHash = 32-byte persistent proof hash
+                                          ├── State Mutation: accessCount += 1
+                                          └── State Mutation: auditLogCount += 1
+                                          ↓
+5. Real-time audit telemetry update  ──→  [ Midnight GraphQL Indexer ] ──→ [ UI: Audit Trail Appended ]
+
+───────────────────────────────────────────────────────────────────────────────────────────────────
+FLOW 5: QUOTA RENEWAL & INSTANT SEQUENCE-BASED REVOCATION
+───────────────────────────────────────────────────────────────────────────────────────────────────
+[ QUOTA RENEWAL ]                         [ INSTANT ACCESS REVOCATION ]
+Hospital Steward extends allowance:       Hospital Admin revokes access:
+DeployedBoardContext.renewAccessQuota()   DeployedBoardContext.revokeAccess()
+         ↓                                         ↓
+bboard.compact: renewAccessQuota()        bboard.compact: revokeAccess()
+├── Assert: state == State.GRANTED        ├── Assert: state == GRANTED || REQUESTED
+├── Assert: caller == owner               ├── Assert: caller == owner
+└── maxAccessLimit += additionalQuota     ├── State Mutation: state = State.REVOKED
+         ↓                                └── sequence += 1 (Rotates sequence, prevents replay)
+UI Quota Display: (e.g. 5 → 10 Queries)            ↓
+                                          UI Status Display: "REVOKED" (Stale Keys Nullified)
+===================================================================================================
 ```
 
 ---
