@@ -272,7 +272,7 @@ export function PermissionsView() {
                 type="number"
                 min="1"
                 max="200"
-                value={extraQuota} min={1} max={500}
+                value={extraQuota}
                 onChange={(e) => setExtraQuota(Number(e.target.value))}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slateSurface-border bg-midnight-950 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400/30"
                 required
