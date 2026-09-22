@@ -33,7 +33,7 @@ Experience the end-to-end interactive workflow of MedEx, demonstrating clinical 
 | 🎥 **Walkthrough Video** | End-to-end video demonstration of MedEx features | [YouTube Walkthrough](https://youtu.be/kTp4SCK7wlk) |
 | 📦 **GitHub Repository** | Verified open-source monorepo codebase | [Suchismita40/confidential-medical](https://github.com/Suchismita40/confidential-medical.git) |
 | ⚙️ **CI/CD Pipeline** | GitHub Actions build, test, and security workflows | [GitHub Actions CI](https://github.com/Suchismita40/confidential-medical/actions) |
-| 🔍 **Preprod Explorer** | Midnight Preprod Contract & Ledger Explorer | [Midnight Preprod Explorer](https://preprod.midnightexplorer.com) |
+| 🔍 **NightScan Explorer** | Midnight Preprod Network Explorer | [Midnight Preprod Explorer](https://explorer.preprod.midnight.network/) |
 | 📄 **Product Proposal** | Formal architecture specification and product proposal | [PROPOSAL.md](PROPOSAL.md) |
 | 🛡️ **Support & Guidelines** | Security and maintainer support documentation | [SUPPORT.md](SUPPORT.md) |
 
@@ -144,7 +144,7 @@ The MedEx smart contract is compiled with Compact v0.23 and deployed to the offi
 | **Deployer Unshielded Address** | `mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv` |
 | **Network Indexer URL** | `https://indexer.preprod.midnight.network/api/v1/graphql` |
 | **Preprod Node URL** | `https://rpc.preprod.midnight.network` |
-| **Contract Explorer Link** | [View Deployed Contract on Midnight Explorer](https://preprod.midnightexplorer.com/contract/e603362546ca047cb7c596389c20fde9bdf1b27489f14137d68fd9cd4a939d97) |
+| **Network Explorer** | [Midnight Preprod Network Explorer](https://explorer.preprod.midnight.network/) |
 
 ---
 
