@@ -19,9 +19,9 @@
 
 Experience the end-to-end interactive workflow of MedEx, demonstrating clinical dataset onboarding, researcher credential verification, zero-knowledge access proof generation, and real-time quota governance on Midnight Preprod:
 
-[![Watch MedEx Demo Video](https://img.shields.io/badge/YouTube-Watch%20MedEx%20Demo%20Video-red?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/GmmMhwnHK4Y)
+[![Watch MedEx Demo Video](https://img.shields.io/badge/YouTube-Watch%20MedEx%20Demo%20Video-red?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/kTp4SCK7wlk)
 
-> 📺 **Direct Video URL**: [https://youtu.be/GmmMhwnHK4Y](https://youtu.be/GmmMhwnHK4Y)
+> 📺 **Direct Video URL**: [https://youtu.be/kTp4SCK7wlk](https://youtu.be/kTp4SCK7wlk)
 
 ---
 
@@ -30,7 +30,7 @@ Experience the end-to-end interactive workflow of MedEx, demonstrating clinical 
 | Resource | Description | Status / Link |
 | :--- | :--- | :--- |
 | 🌐 **Live Web Application** | Production-ready clinical workstation deployed on Vercel | [https://confidential-medical-bboard-ui.vercel.app/](https://confidential-medical-bboard-ui.vercel.app/) |
-| 🎥 **Walkthrough Video** | End-to-end video demonstration of MedEx features | [YouTube Walkthrough](https://youtu.be/GmmMhwnHK4Y) |
+| 🎥 **Walkthrough Video** | End-to-end video demonstration of MedEx features | [YouTube Walkthrough](https://youtu.be/kTp4SCK7wlk) |
 | 📦 **GitHub Repository** | Verified open-source monorepo codebase | [Suchismita40/confidential-medical](https://github.com/Suchismita40/confidential-medical.git) |
 | ⚙️ **CI/CD Pipeline** | GitHub Actions build, test, and security workflows | [GitHub Actions CI](https://github.com/Suchismita40/confidential-medical/actions) |
 | 🔍 **Preprod Explorer** | Midnight Preprod Contract & Ledger Explorer | [Midnight Preprod Explorer](https://preprod.midnightexplorer.com) |

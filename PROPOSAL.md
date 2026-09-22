@@ -1,7 +1,7 @@
 # 🏥 Project Proposal: Private Medical Research Data Exchange
 
 ## 🎥 Demo Video
-- **Walkthrough Video**: [https://youtu.be/GmmMhwnHK4Y](https://youtu.be/GmmMhwnHK4Y)
+- **Walkthrough Video**: [https://youtu.be/kTp4SCK7wlk](https://youtu.be/kTp4SCK7wlk)
 
 ## 1. Problem Statement
 Medical research institutions, pharmaceutical developers, and academic hospitals frequently need to collaborate and train machine learning models on clinical data. However, healthcare data sharing faces severe legal, ethical, and cryptographic roadblocks:
