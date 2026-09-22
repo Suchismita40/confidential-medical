@@ -97,7 +97,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
           </div>
 
           {/* Desktop Navigation Tabs */}
-          <nav className="hidden lg:flex items-center gap-1.5 bg-midnight-900/90 p-1.5 rounded-2xl border border-slateSurface-border shadow-subtle">
+          <nav aria-label="Main Navigation" role="navigation" className="hidden lg:flex items-center gap-1.5 bg-midnight-900/90 p-1.5 rounded-2xl border border-slateSurface-border shadow-subtle">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -182,7 +182,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 rounded-xl bg-midnight-900 border border-slateSurface-border text-slate-300 hover:text-white"
-              aria-label="Toggle Navigation Menu"
+              aria-label="Toggle Navigation Menu" aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation-menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -192,7 +192,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
 
       {/* Mobile Navigation Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-midnight-900 border-t border-slateSurface-border px-4 py-3 space-y-2 animate-in slide-in-from-top-2 duration-200">
+        <div id="mobile-navigation-menu" role="navigation" aria-label="Mobile Navigation" className="lg:hidden bg-midnight-900 border-t border-slateSurface-border px-4 py-3 space-y-2 animate-in slide-in-from-top-2 duration-200">
           <div className="grid grid-cols-2 gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
