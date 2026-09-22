@@ -476,15 +476,15 @@ The repository utilizes **GitHub Actions** (`.github/workflows/ci.yml`) to enfor
 
 ```mermaid
 flowchart LR
-    A[1. Checkout Repository] --> B[2. Verify Repository Integrity]
-    B --> C[3. Security & Secret Audit]
-    C --> D[4. Setup Compact Compiler]
-    D --> E[5. Install Monorepo Dependencies]
-    E --> F[6. Compile Compact Circuits]
-    F --> G[7. Typecheck & Lint Workspace]
-    G --> H[8. Run Vitest Test Suite (14 Tests)]
-    H --> I[9. Build Next.js Production Bundle]
-    I --> J[10. Upload Artifacts]
+    A["1. Checkout Repository"] --> B["2. Verify Repository Integrity"]
+    B --> C["3. Security & Secret Audit"]
+    C --> D["4. Setup Compact Compiler"]
+    D --> E["5. Install Monorepo Dependencies"]
+    E --> F["6. Compile Compact Circuits"]
+    F --> G["7. Typecheck & Lint Workspace"]
+    G --> H["8. Run Vitest Test Suite — 14 Tests"]
+    H --> I["9. Build Next.js Production Bundle"]
+    I --> J["10. Upload Artifacts"]
 ```
 
 ### Configured Pipeline Stages:
