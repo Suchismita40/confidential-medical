@@ -43,10 +43,10 @@ The contract defines 6 zero-knowledge circuits in `contract/src/bboard.compact`:
 
 ## 6. Frontend & User Experience
 - **Framework**: Next.js App Router (14.2+) with TypeScript.
-- **Design System**: Refined White & Olive palette (`#2D5A27`, `#E8EFE9`, `#FFFFFF`), glassmorphism, micro-animations, and full responsive design.
+- **Design System**: Refined Clinical Obsidian & Teal dark mode palette (`#040711`, `#0D9488`, `#14B8A6`), institutional glassmorphism, responsive navigation shell, and accessibility-compliant UI primitives.
 - **Wallet**: Authentic Midnight Lace Wallet integration (`window.midnight.mnLace`).
 
 ## 7. Verification & Testing
-- **Test Suite**: 7/7 comprehensive Vitest unit tests covering all circuits, quotas, and permissions.
+- **Test Suite**: 8/8 comprehensive Vitest unit tests covering all circuits, quotas, and permissions.
 - **Next.js Production Build**: Static export (`output: 'export'`) verified with 0 errors.
 - **CI/CD**: GitHub Actions pipeline for automated compilation, linting, testing, and secret leak scanning.
