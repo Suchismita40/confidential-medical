@@ -577,9 +577,10 @@ export function DatasetWorkspace() {
             {!isBusy && (
               <button
                 onClick={resetTxProgress}
+                aria-label="Close transaction status"
                 className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-midnight-800"
               >
-                ?
+                <XCircle className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -587,9 +588,20 @@ export function DatasetWorkspace() {
           <p className="text-xs text-slate-300 leading-relaxed">{tx.message}</p>
 
           {tx.txHash && (
-            <div className="bg-midnight-950 p-2.5 rounded-xl border border-slateSurface-border text-[10px] font-mono text-slate-300 break-all space-y-1">
-              <span className="text-slate-500 block">Transaction Hash:</span>
-              <span className="text-teal-300">{tx.txHash}</span>
+            <div className="bg-midnight-950 p-2.5 rounded-xl border border-slateSurface-border text-[10px] font-mono text-slate-300 break-all space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-500 font-sans text-[11px] font-medium">Transaction Hash:</span>
+                <a
+                  href={`https://preprod.midnightexplorer.com/tx/${tx.txHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-teal-400 hover:underline flex items-center gap-1 font-sans text-[11px]"
+                >
+                  <span>Explorer</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+              <span className="text-teal-300 block select-all">{tx.txHash}</span>
             </div>
           )}
 
