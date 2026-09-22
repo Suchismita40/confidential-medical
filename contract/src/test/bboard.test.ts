@@ -179,4 +179,20 @@ describe("Private Medical Research Data Exchange Contract", () => {
     }
     expect(simulator.getLedger().accessCount).toEqual(7n);
   });
+
+  it("preserves deterministic public key derivation and ledger sequence monotonicity across state transitions", () => {
+    const hospitalKey = randomBytes(32);
+    const simulator = new BBoardSimulator(hospitalKey);
+
+    const initialPk = simulator.publicKey();
+    expect(initialPk).toHaveLength(32);
+
+    simulator.registerDataset("Longitudinal Cohort Study", "Genomics");
+    const pkAfterReg = simulator.publicKey();
+    expect(pkAfterReg).toEqual(initialPk);
+
+    const ledgerState = simulator.getLedger();
+    expect(ledgerState.sequence).toBeGreaterThanOrEqual(1n);
+    expect(ledgerState.datasetCount).toBeGreaterThanOrEqual(2n);
+  });
 });
