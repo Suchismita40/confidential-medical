@@ -474,17 +474,28 @@ private-medical-research-data-exchange/
 
 The repository utilizes **GitHub Actions** (`.github/workflows/ci.yml`) to enforce automated code quality, compilation, and security checks on every push and pull request to `main`:
 
-```mermaid
-flowchart LR
-    A["1. Checkout Repository"] --> B["2. Verify Repository Integrity"]
-    B --> C["3. Security & Secret Audit"]
-    C --> D["4. Setup Compact Compiler"]
-    D --> E["5. Install Monorepo Dependencies"]
-    E --> F["6. Compile Compact Circuits"]
-    F --> G["7. Typecheck & Lint Workspace"]
-    G --> H["8. Run Vitest Test Suite — 14 Tests"]
-    H --> I["9. Build Next.js Production Bundle"]
-    I --> J["10. Upload Artifacts"]
+```text
+.github/workflows/ci.yml
+│
+├── 1. Checkout Repository            # Pulls latest main commit & repository tags
+│   ↓
+├── 2. Verify Repository Integrity     # Validates workspace structure & config files
+│   ↓
+├── 3. Security & Secret Audit         # Scans for sensitive keys, tokens, or credentials
+│   ↓
+├── 4. Setup Compact Compiler          # Configures Compact v0.23 / v0.31 toolchain
+│   ↓
+├── 5. Install Monorepo Dependencies   # Executes npm install across all packages
+│   ↓
+├── 6. Compile Compact Circuits        # Generates proving keys & TypeScript bindings
+│   ↓
+├── 7. Typecheck & Lint Workspace      # Executes tsc --noEmit across all packages
+│   ↓
+├── 8. Run Vitest Test Suite (14)      # Executes 14/14 unit tests across contract & wallet
+│   ↓
+├── 9. Build Next.js Production Bundle # Compiles optimized bboard-ui distribution
+│   ↓
+└── 10. Upload Artifacts               # Packages build bundles & test coverage reports
 ```
 
 ### Configured Pipeline Stages:
