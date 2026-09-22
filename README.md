@@ -36,8 +36,8 @@ MedEx enables accredited healthcare organizations, academic medical centers, and
 | :--- | :--- | :--- |
 | ?? **Live Application** | Production web application deployed on Vercel | [Live Demo (Vercel)](https://med-research-fiem.vercel.app) |
 | ?? **Demo Video** | Complete interactive application walkthrough | [Watch Demo Video](https://youtu.be/GmmMhwnHK4Y) |
-| ?? **GitHub Repository** | Open-source monorepo codebase | [GitHub Repository](https://github.com/Suchismita40/med-research.git) |
-| ?? **CI/CD Pipeline** | GitHub Actions build & verification pipeline | [View CI/CD Pipeline](https://github.com/Suchismita40/med-research/actions) |
+| ?? **GitHub Repository** | Open-source monorepo codebase | [GitHub Repository](https://github.com/Suchismita40/confidential-medical.git) |
+| ?? **CI/CD Pipeline** | GitHub Actions build & verification pipeline | [View CI/CD Pipeline](https://github.com/Suchismita40/confidential-medical/actions) |
 | ?? **Smart Contract Explorer** | Midnight Preprod Network Explorer | [Midnight Preprod Explorer](https://preprod.midnightexplorer.com) |
 | ?? **Product Proposal** | Complete project documentation and specs | [PROPOSAL.md](PROPOSAL.md) |
 
@@ -228,8 +228,8 @@ private-medical-research-data-exchange/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Suchismita40/med-research.git
-cd med-research
+git clone https://github.com/Suchismita40/confidential-medical.git
+cd confidential-medical
 ```
 
 ### 2. Install Monorepo Dependencies
