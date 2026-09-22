@@ -3,78 +3,80 @@
 import React, { useState } from 'react';
 import {
   Shield,
-  Wallet,
-  RefreshCw,
-  CheckCircle2,
-  Copy,
-  Check,
-  ExternalLink,
-  LayoutDashboard,
-  Database,
-  KeyRound,
   Activity,
-  Globe,
+  Database,
   Lock,
+  Layers,
+  FileCode,
+  LineChart,
+  Wallet,
   Menu,
   X,
+  ExternalLink,
+  Copy,
+  Check,
+  CheckCircle2,
+  RefreshCw,
+  LogOut,
+  AlertCircle,
 } from 'lucide-react';
 import { useDeployedBoardContext } from '../../src/hooks/useDeployedBoardContext';
 
-interface HeaderProps {
+export interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
 
 export function Header({ activeTab, setActiveTab }: HeaderProps) {
-  const { state, connectWallet } = useDeployedBoardContext();
-  const [copied, setCopied] = useState(false);
+  const { state, connectWallet, disconnectWallet } = useDeployedBoardContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [copiedWallet, setCopiedWallet] = useState(false);
+
+  const isConnected = state.status === 'connected' && Boolean(state.connectedWallet);
+  const isConnecting = state.status === 'connecting';
 
   const PREPROD_CONTRACT = 'e603362546ca047cb7c596389c20fde9bdf1b27489f14137d68fd9cd4a939d97';
 
+  const handleCopyContract = () => {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(PREPROD_CONTRACT);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleCopyWallet = () => {
+    const fullAddr = state.connectedWallet?.fullAddress || state.connectedWallet?.address;
+    if (fullAddr && typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(fullAddr);
+      setCopiedWallet(true);
+      setTimeout(() => setCopiedWallet(false), 2000);
+    }
+  };
+
   const navItems = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'datasets', label: 'Datasets', icon: Database, badge: state.datasets.length },
-    {
-      id: 'permissions',
-      label: 'Permissions',
-      icon: KeyRound,
-      badge: state.datasets.filter((d) => d.status === 'REQUESTED').length || undefined,
-    },
-    { id: 'activity', label: 'Activity', icon: Activity, badge: state.auditLogs.length },
+    { id: 'overview', label: 'Overview', icon: Shield },
+    { id: 'datasets', label: 'Confidential Datasets', icon: Database, badge: state.datasets.length },
+    { id: 'permissions', label: 'Permissions & Quotas', icon: Lock },
+    { id: 'activity', label: 'Activity & Telemetry', icon: Activity, badge: state.auditLogs.length },
+    { id: 'privacy', label: 'ZK Privacy Architecture', icon: Layers },
+    { id: 'docs', label: 'Documentation & Circuits', icon: FileCode },
+    { id: 'analytics', label: 'Analytics', icon: LineChart },
   ];
 
-  const isConnected = state.status === 'connected';
-  const isConnecting = state.status === 'connecting';
-
-  const handleCopyContract = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(PREPROD_CONTRACT);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const formatAddress = (addr?: string) => {
-    if (!addr) return 'Lace Connected';
-    if (addr.length <= 16) return addr;
-    return `${addr.slice(0, 8)}...${addr.slice(-6)}`;
-  };
-
   return (
-    <header className="sticky top-0 z-50 bg-midnight-950/85 backdrop-blur-xl border-b border-slateSurface-border shadow-card transition-all">
+    <header role="banner" className="sticky top-0 z-40 bg-midnight-950/90 backdrop-blur-md border-b border-slateSurface-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo & Platform Badge */}
+          {/* Brand Logo & Tagline */}
           <div
-            className="flex items-center gap-3.5 cursor-pointer group shrink-0"
-            onClick={() => {
-              setActiveTab('overview');
-              setMobileMenuOpen(false);
-            }}
+            onClick={() => setActiveTab('overview')}
+            className="flex items-center gap-3 cursor-pointer group select-none"
           >
             <div className="relative">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500 via-teal-600 to-midnight-850 p-0.5 shadow-glowTeal group-hover:shadow-hover transition-all duration-300">
-                <div className="w-full h-full rounded-[14px] bg-midnight-900 flex items-center justify-center text-teal-400 group-hover:text-teal-300 transition-colors">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-400 via-teal-600 to-emerald-700 p-0.5 shadow-glowTeal">
+                <div className="w-full h-full bg-midnight-950 rounded-[14px] flex items-center justify-center text-teal-300">
                   <Shield className="w-6 h-6" />
                 </div>
               </div>
@@ -149,34 +151,54 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
             {/* Network Badge */}
             <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-midnight-900/90 rounded-xl border border-slateSurface-border text-xs text-slate-300 font-medium shadow-subtle">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-glowEmerald" />
-              <span>Midnight Preprod</span>
+              <span>{state.connectedWallet?.network || 'Midnight Preprod'}</span>
             </div>
 
-            {/* Wallet Connector Button */}
-            <button
-              onClick={connectWallet}
-              disabled={isConnecting}
-              className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 select-none shadow-subtle active:scale-[0.98] ${
-                isConnected
-                  ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-500/40 shadow-glowEmerald hover:bg-emerald-950/90'
-                  : 'bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-400 hover:to-teal-300 text-midnight-950 font-bold shadow-glowTeal'
-              }`}
-            >
-              {isConnecting ? (
-                <RefreshCw className="w-4 h-4 animate-spin text-midnight-950" />
-              ) : isConnected ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              ) : (
-                <Wallet className="w-4 h-4 text-midnight-950 shrink-0" />
-              )}
-              <span className="font-mono whitespace-nowrap">
-                {isConnecting
-                  ? 'Authorizing...'
-                  : isConnected
-                  ? formatAddress(state.connectedWallet?.address)
-                  : 'Connect Wallet'}
-              </span>
-            </button>
+            {/* Wallet Connector Hub */}
+            {isConnected ? (
+              <div className="flex items-center gap-1.5 p-1 bg-midnight-900 rounded-2xl border border-emerald-500/40 shadow-glowEmerald">
+                <div
+                  title={`Full Address: ${state.connectedWallet?.fullAddress || state.connectedWallet?.address}`}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-emerald-950/80 rounded-xl text-xs text-emerald-300 font-mono font-medium select-all"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>{state.connectedWallet?.address}</span>
+                </div>
+
+                <button
+                  onClick={handleCopyWallet}
+                  title="Copy full live wallet address"
+                  className="p-1.5 text-slate-400 hover:text-emerald-300 hover:bg-midnight-800 rounded-lg transition-colors"
+                  aria-label="Copy wallet address"
+                >
+                  {copiedWallet ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+
+                <button
+                  onClick={disconnectWallet}
+                  title="Disconnect Lace Wallet"
+                  className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition-colors"
+                  aria-label="Disconnect wallet"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={connectWallet}
+                disabled={isConnecting}
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 select-none shadow-glowTeal bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-400 hover:to-teal-300 text-midnight-950 font-bold active:scale-[0.98]"
+              >
+                {isConnecting ? (
+                  <RefreshCw className="w-4 h-4 animate-spin text-midnight-950" />
+                ) : (
+                  <Wallet className="w-4 h-4 text-midnight-950 shrink-0" />
+                )}
+                <span className="font-mono whitespace-nowrap">
+                  {isConnecting ? 'Authorizing...' : 'Connect Lace'}
+                </span>
+              </button>
+            )}
 
             {/* Mobile Hamburger Trigger */}
             <button
@@ -189,6 +211,22 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
           </div>
         </div>
       </div>
+
+      {/* Global Error Banner when wallet connection fails */}
+      {state.status === 'error' && state.error && (
+        <div className="bg-amber-950/80 border-t border-b border-amber-500/30 px-4 py-2 text-xs text-amber-300 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>{state.error}</span>
+          </div>
+          <button
+            onClick={() => connectWallet()}
+            className="px-2.5 py-1 bg-amber-900/60 hover:bg-amber-900 rounded-lg text-amber-200 font-semibold transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {/* Mobile Navigation Dropdown */}
       {mobileMenuOpen && (

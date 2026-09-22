@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import type { Logger } from 'pino';
 
 export interface DatasetItem {
@@ -35,7 +35,8 @@ export interface WalletInfo {
   name: string;
   icon?: string;
   rdns?: string;
-  address?: string;
+  address: string;
+  fullAddress: string;
   network?: string;
 }
 
@@ -63,6 +64,7 @@ export interface DeployedBoardState {
 export interface DeployedBoardContextType {
   state: DeployedBoardState;
   connectWallet: () => Promise<void>;
+  disconnectWallet: () => void;
   selectDataset: (id: string) => void;
   registerDataset: (title: string, category: string, maxLimit: number, institution: string, description: string) => Promise<boolean>;
   requestAccess: (datasetId: string) => Promise<boolean>;
@@ -131,7 +133,7 @@ const INITIAL_AUDIT_LOGS: AuditLogEntry[] = [
     timestamp: '2026-08-18 13:45:12 UTC',
     circuit: 'submitAccessProof',
     datasetTitle: 'Cardiology Patient Outcomes Multi-Center Cohort',
-    actor: 'mn_shield-...jl9kkr',
+    actor: 'mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv',
     status: 'CONFIRMED',
     txHash: '636ea733d93f66febf110812f06573cc7c5d8f19569b0d2cc88420fdeabaf169',
     proofHash: 'a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8',
@@ -141,7 +143,7 @@ const INITIAL_AUDIT_LOGS: AuditLogEntry[] = [
     timestamp: '2026-08-18 12:30:05 UTC',
     circuit: 'grantPermission',
     datasetTitle: 'Cardiology Patient Outcomes Multi-Center Cohort',
-    actor: 'mn_addr_preprod1efmkm...',
+    actor: 'mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv',
     status: 'CONFIRMED',
     txHash: '847bc128d93f66febf110812f06573cc7c5d8f19569b0d2cc88420fdeabaf301',
   },
@@ -150,7 +152,7 @@ const INITIAL_AUDIT_LOGS: AuditLogEntry[] = [
     timestamp: '2026-08-18 11:15:40 UTC',
     circuit: 'registerDataset',
     datasetTitle: 'Neurodegenerative MRI Longitudinal Biomarkers',
-    actor: 'mn_addr_preprod1efmkm...',
+    actor: 'mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv',
     status: 'CONFIRMED',
     txHash: '194ea733d93f66febf110812f06573cc7c5d8f19569b0d2cc88420fdeabaf892',
   },
@@ -168,6 +170,7 @@ const defaultState: DeployedBoardState = {
 const DeployedBoardContext = createContext<DeployedBoardContextType>({
   state: defaultState,
   connectWallet: async () => {},
+  disconnectWallet: () => {},
   selectDataset: () => {},
   registerDataset: async () => false,
   requestAccess: async () => false,
@@ -185,7 +188,7 @@ export const DeployedBoardProvider: React.FC<{
   logger: Logger;
 }> = ({ children, logger }) => {
   const [state, setState] = useState<DeployedBoardState>(defaultState);
-  const [connectedApi, setConnectedApi] = useState<any>(null);
+  const connectedApiRef = useRef<any>(null);
 
   const resetTxProgress = useCallback(() => {
     setState((prev) => ({ ...prev, txProgress: { phase: 'idle', message: '' } }));
@@ -194,6 +197,68 @@ export const DeployedBoardProvider: React.FC<{
   const selectDataset = useCallback((id: string) => {
     setState((prev) => ({ ...prev, selectedDatasetId: id }));
   }, []);
+
+  const extractAddressFromConnectedApi = async (api: any): Promise<string> => {
+    if (!api) return '';
+
+    // 1. Try shielded address lookup
+    try {
+      if (typeof api.getShieldedAddresses === 'function') {
+        const shielded = await api.getShieldedAddresses();
+        if (shielded) {
+          const addr = shielded.shieldedAddress || shielded.shieldedCoinPublicKey;
+          if (typeof addr === 'string' && addr.trim().length > 0) {
+            return addr.trim();
+          }
+        }
+      }
+    } catch (e) {
+      logger.warn({ err: e }, 'Shielded address extraction attempt failed');
+    }
+
+    // 2. Try unshielded address lookup
+    try {
+      if (typeof api.getUnshieldedAddress === 'function') {
+        const unshielded = await api.getUnshieldedAddress();
+        if (unshielded) {
+          const addr = typeof unshielded === 'object' ? unshielded.unshieldedAddress : unshielded;
+          if (typeof addr === 'string' && addr.trim().length > 0) {
+            return addr.trim();
+          }
+        }
+      }
+    } catch (e) {
+      logger.warn({ err: e }, 'Unshielded address extraction attempt failed');
+    }
+
+    // 3. Try Dust address lookup as fallback
+    try {
+      if (typeof api.getDustAddress === 'function') {
+        const dust = await api.getDustAddress();
+        if (dust) {
+          const addr = typeof dust === 'object' ? dust.dustAddress : dust;
+          if (typeof addr === 'string' && addr.trim().length > 0) {
+            return addr.trim();
+          }
+        }
+      }
+    } catch (e) {
+      logger.warn({ err: e }, 'Dust address extraction attempt failed');
+    }
+
+    return '';
+  };
+
+  const disconnectWallet = useCallback(() => {
+    connectedApiRef.current = null;
+    setState((prev) => ({
+      ...prev,
+      status: 'disconnected',
+      connectedWallet: undefined,
+      error: undefined,
+    }));
+    logger.info('Midnight Lace wallet disconnected.');
+  }, [logger]);
 
   const connectWallet = useCallback(async () => {
     setState((prev) => ({ ...prev, status: 'connecting', error: undefined }));
@@ -219,20 +284,14 @@ export const DeployedBoardProvider: React.FC<{
         logger.warn('Lace wallet extension not found in window.midnight.');
         setState((prev) => ({
           ...prev,
-          status: 'connected',
-          contractAddress: PREPROD_CONTRACT_ADDRESS,
-          connectedWallet: {
-            name: 'Midnight Lace (Simulated)',
-            rdns: 'midnight.mnLace',
-            address: 'mn_addr_preprod1efmkm...',
-            network: 'PREPROD',
-          },
-          error: undefined,
+          status: 'disconnected',
+          connectedWallet: undefined,
+          error: 'Midnight Lace extension not detected. Please install and enable the Midnight Lace Wallet browser extension.',
         }));
         return;
       }
 
-      logger.info({ walletName: wallet.name }, 'Found Midnight Lace Wallet. Negotiating network...');
+      logger.info({ walletName: wallet.name }, 'Found Midnight Lace Wallet. Requesting authorization...');
 
       const candidateNetworks = ['preprod', 'undeployed', 'preview', 'mainnet'];
       let connected: any = null;
@@ -271,34 +330,15 @@ export const DeployedBoardProvider: React.FC<{
         throw new Error(errMsg);
       }
 
-      setConnectedApi(connected);
+      connectedApiRef.current = connected;
 
-      let address = '';
-      try {
-        if (typeof connected.getShieldedAddresses === 'function') {
-          const shielded = await connected.getShieldedAddresses();
-          address = shielded?.shieldedAddress || shielded?.shieldedCoinPublicKey || '';
-        }
-      } catch (errShielded) {
-        logger.warn({ err: errShielded }, 'Shielded address lookup error');
+      const rawAddress = await extractAddressFromConnectedApi(connected);
+
+      if (!rawAddress) {
+        throw new Error('Connected to Midnight Lace, but could not retrieve active wallet address. Please check wallet permissions.');
       }
 
-      if (!address) {
-        try {
-          if (typeof connected.getUnshieldedAddress === 'function') {
-            const unshielded = await connected.getUnshieldedAddress();
-            address = unshielded?.unshieldedAddress || String(unshielded) || '';
-          }
-        } catch (errUnshielded) {
-          logger.warn({ err: errUnshielded }, 'Unshielded address lookup error');
-        }
-      }
-
-      if (!address) {
-        address = 'mn_addr_preprod1efmkm...';
-      }
-
-      const displayAddress = address.length > 20 ? `${address.slice(0, 10)}...${address.slice(-6)}` : address;
+      const displayAddress = rawAddress.length > 20 ? `${rawAddress.slice(0, 10)}...${rawAddress.slice(-6)}` : rawAddress;
 
       setState((prev) => ({
         ...prev,
@@ -306,23 +346,68 @@ export const DeployedBoardProvider: React.FC<{
         contractAddress: PREPROD_CONTRACT_ADDRESS,
         connectedWallet: {
           name: wallet.name || 'Midnight Lace',
-          rdns: 'midnight.mnLace',
+          rdns: wallet.rdns || 'midnight.mnLace',
           address: displayAddress,
+          fullAddress: rawAddress,
           network: matchedNet.toUpperCase(),
         },
         error: undefined,
       }));
 
-      logger.info('Midnight Lace Wallet connected successfully!');
+      logger.info({ address: displayAddress }, 'Midnight Lace Wallet connected with live address!');
     } catch (err: any) {
       logger.error({ err }, 'Wallet connection error');
+      connectedApiRef.current = null;
       setState((prev) => ({
         ...prev,
         status: 'error',
+        connectedWallet: undefined,
         error: err?.message || 'Failed to connect to Midnight Lace Wallet',
       }));
     }
   }, [logger]);
+
+  // Periodic Account / Network Change Sync
+  useEffect(() => {
+    if (state.status !== 'connected' || !connectedApiRef.current) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const api = connectedApiRef.current;
+        if (!api) return;
+
+        // Check connection status if supported
+        if (typeof api.getConnectionStatus === 'function') {
+          const connStatus = await api.getConnectionStatus();
+          if (connStatus && connStatus.status === 'disconnected') {
+            disconnectWallet();
+            return;
+          }
+        }
+
+        // Re-query current address to detect account switching in Lace
+        const currentAddr = await extractAddressFromConnectedApi(api);
+        if (currentAddr && currentAddr !== state.connectedWallet?.fullAddress) {
+          logger.info({ oldAddr: state.connectedWallet?.fullAddress, newAddr: currentAddr }, 'Lace account switch detected! Updating address state.');
+          const newDisplay = currentAddr.length > 20 ? `${currentAddr.slice(0, 10)}...${currentAddr.slice(-6)}` : currentAddr;
+          setState((prev) => ({
+            ...prev,
+            connectedWallet: prev.connectedWallet
+              ? {
+                  ...prev.connectedWallet,
+                  address: newDisplay,
+                  fullAddress: currentAddr,
+                }
+              : undefined,
+          }));
+        }
+      } catch (err) {
+        // Ignore background polling transient errors
+      }
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [state.status, state.connectedWallet?.fullAddress, disconnectWallet, logger]);
 
   const generateRandomHex = (length: number) => {
     const bytes = new Uint8Array(length);
@@ -340,19 +425,19 @@ export const DeployedBoardProvider: React.FC<{
         ...prev,
         txProgress: {
           phase: 'validating',
-          message: 'Validating dataset metadata and owner credential...',
+          message: `Validating clinical cohort metadata: "${title}"...`,
           circuit: 'registerDataset',
         },
       }));
 
       try {
-        await new Promise((r) => setTimeout(r, 600));
+        await new Promise((r) => setTimeout(r, 900));
 
         setState((prev) => ({
           ...prev,
           txProgress: {
             phase: 'proving',
-            message: 'Generating zero-knowledge proof for registerDataset circuit...',
+            message: 'Generating zero-knowledge proof for cohort registration...',
             circuit: 'registerDataset',
           },
         }));
@@ -363,31 +448,31 @@ export const DeployedBoardProvider: React.FC<{
           ...prev,
           txProgress: {
             phase: 'submitting',
-            message: 'Submitting transaction to Midnight Preprod Indexer...',
+            message: 'Submitting transaction to Midnight Preprod blockchain...',
             circuit: 'registerDataset',
           },
         }));
 
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 900));
 
-        const newId = `ds-${String(Date.now()).slice(-4)}`;
+        const newId = `ds-${Date.now().toString().slice(-4)}`;
         const txHash = generateRandomHex(32);
-        const ownerPk = '02' + generateRandomHex(31);
+        const ownerPk = state.connectedWallet?.fullAddress || generateRandomHex(32);
 
         const newDataset: DatasetItem = {
           id: newId,
           title,
-          category: (category as any) || 'General',
+          category: category as any,
           institution: institution || 'Accredited Medical Research Center',
           owner: ownerPk,
           maxAccessLimit: BigInt(maxLimit || 50),
           accessCount: 0n,
           status: 'NONE',
-          lastProofHash: generateRandomHex(32),
-          sampleSize: Math.floor(Math.random() * 8000) + 1500,
+          lastProofHash: '0000000000000000000000000000000000000000000000000000000000000000',
+          sampleSize: Math.floor(Math.random() * 8000) + 1200,
           zkVerificationType: 'Selective Disclosure (HIPAA / GDPR)',
           createdAt: new Date().toISOString().split('T')[0],
-          description: description || 'Confidential clinical research dataset verified on Midnight.',
+          description: description || 'Confidential multi-center clinical research dataset.',
         };
 
         const newLog: AuditLogEntry = {
@@ -395,7 +480,7 @@ export const DeployedBoardProvider: React.FC<{
           timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
           circuit: 'registerDataset',
           datasetTitle: title,
-          actor: state.connectedWallet?.address || 'mn_shield-...jl9kkr',
+          actor: state.connectedWallet?.fullAddress || 'Institutional Researcher',
           status: 'CONFIRMED',
           txHash,
         };
@@ -407,7 +492,7 @@ export const DeployedBoardProvider: React.FC<{
           auditLogs: [newLog, ...prev.auditLogs],
           txProgress: {
             phase: 'confirmed',
-            message: `Dataset "${title}" successfully registered on Midnight Preprod!`,
+            message: `Dataset "${title}" successfully registered on Midnight!`,
             circuit: 'registerDataset',
             txHash,
           },
@@ -419,9 +504,9 @@ export const DeployedBoardProvider: React.FC<{
           ...prev,
           txProgress: {
             phase: 'error',
-            message: 'Failed to register dataset',
+            message: 'Registration failed',
             circuit: 'registerDataset',
-            error: err?.message || 'Transaction rejected or timed out.',
+            error: err?.message || 'Transaction rejected.',
           },
         }));
         return false;
@@ -439,19 +524,19 @@ export const DeployedBoardProvider: React.FC<{
         ...prev,
         txProgress: {
           phase: 'proving',
-          message: `Generating ZK proof for researcher access request (${targetDataset.title})...`,
+          message: 'Computing researcher authorization witness and generating ZK proof...',
           circuit: 'requestAccess',
         },
       }));
 
       try {
-        await new Promise((r) => setTimeout(r, 1100));
+        await new Promise((r) => setTimeout(r, 1200));
 
         setState((prev) => ({
           ...prev,
           txProgress: {
             phase: 'submitting',
-            message: 'Submitting requestAccess transaction to Midnight Preprod...',
+            message: 'Submitting confidential access request to Midnight ledger...',
             circuit: 'requestAccess',
           },
         }));
@@ -459,14 +544,14 @@ export const DeployedBoardProvider: React.FC<{
         await new Promise((r) => setTimeout(r, 900));
 
         const txHash = generateRandomHex(32);
-        const researcherPk = '03' + generateRandomHex(31);
+        const researcherPk = state.connectedWallet?.fullAddress || generateRandomHex(32);
 
         const newLog: AuditLogEntry = {
           id: `log-${Date.now()}`,
           timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
           circuit: 'requestAccess',
           datasetTitle: targetDataset.title,
-          actor: state.connectedWallet?.address || 'mn_shield-...jl9kkr',
+          actor: state.connectedWallet?.fullAddress || 'Accredited Investigator',
           status: 'CONFIRMED',
           txHash,
         };
@@ -474,12 +559,18 @@ export const DeployedBoardProvider: React.FC<{
         setState((prev) => ({
           ...prev,
           datasets: prev.datasets.map((d) =>
-            d.id === datasetId ? { ...d, status: 'REQUESTED', activeResearcherPk: researcherPk } : d,
+            d.id === datasetId
+              ? {
+                  ...d,
+                  status: 'REQUESTED',
+                  activeResearcherPk: researcherPk,
+                }
+              : d,
           ),
           auditLogs: [newLog, ...prev.auditLogs],
           txProgress: {
             phase: 'confirmed',
-            message: `Access requested for "${targetDataset.title}". Awaiting hospital authorization.`,
+            message: `Confidential access request submitted for "${targetDataset.title}".`,
             circuit: 'requestAccess',
             txHash,
           },
@@ -511,7 +602,7 @@ export const DeployedBoardProvider: React.FC<{
         ...prev,
         txProgress: {
           phase: 'proving',
-          message: `Verifying owner signature and granting permission for ${targetDataset.title}...`,
+          message: 'Generating zero-knowledge permission grant proof...',
           circuit: 'grantPermission',
         },
       }));
@@ -523,7 +614,7 @@ export const DeployedBoardProvider: React.FC<{
           ...prev,
           txProgress: {
             phase: 'submitting',
-            message: 'Publishing permission grant to Midnight ledger...',
+            message: 'Submitting access grant transaction to Midnight...',
             circuit: 'grantPermission',
           },
         }));
@@ -531,14 +622,13 @@ export const DeployedBoardProvider: React.FC<{
         await new Promise((r) => setTimeout(r, 900));
 
         const txHash = generateRandomHex(32);
-        const pk = researcherPk || targetDataset.activeResearcherPk || '03' + generateRandomHex(31);
 
         const newLog: AuditLogEntry = {
           id: `log-${Date.now()}`,
           timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
           circuit: 'grantPermission',
           datasetTitle: targetDataset.title,
-          actor: state.connectedWallet?.address || 'mn_shield-...jl9kkr',
+          actor: state.connectedWallet?.fullAddress || 'Cohort Governance Board',
           status: 'CONFIRMED',
           txHash,
         };
@@ -546,7 +636,13 @@ export const DeployedBoardProvider: React.FC<{
         setState((prev) => ({
           ...prev,
           datasets: prev.datasets.map((d) =>
-            d.id === datasetId ? { ...d, status: 'GRANTED', activeResearcherPk: pk } : d,
+            d.id === datasetId
+              ? {
+                  ...d,
+                  status: 'GRANTED',
+                  activeResearcherPk: researcherPk || d.activeResearcherPk,
+                }
+              : d,
           ),
           auditLogs: [newLog, ...prev.auditLogs],
           txProgress: {
@@ -623,7 +719,7 @@ export const DeployedBoardProvider: React.FC<{
           timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
           circuit: 'submitAccessProof',
           datasetTitle: targetDataset.title,
-          actor: state.connectedWallet?.address || 'mn_shield-...jl9kkr',
+          actor: state.connectedWallet?.fullAddress || 'Accredited Investigator',
           status: 'CONFIRMED',
           txHash,
           proofHash,
@@ -701,7 +797,7 @@ export const DeployedBoardProvider: React.FC<{
           timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
           circuit: 'renewAccessQuota',
           datasetTitle: targetDataset.title,
-          actor: state.connectedWallet?.address || 'mn_shield-...jl9kkr',
+          actor: state.connectedWallet?.fullAddress || 'Cohort Governance Board',
           status: 'CONFIRMED',
           txHash,
         };
@@ -777,7 +873,7 @@ export const DeployedBoardProvider: React.FC<{
           timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
           circuit: 'revokeAccess',
           datasetTitle: targetDataset.title,
-          actor: state.connectedWallet?.address || 'mn_shield-...jl9kkr',
+          actor: state.connectedWallet?.fullAddress || 'Cohort Governance Board',
           status: 'CONFIRMED',
           txHash,
         };
@@ -816,6 +912,7 @@ export const DeployedBoardProvider: React.FC<{
       value={{
         state,
         connectWallet,
+        disconnectWallet,
         selectDataset,
         registerDataset,
         requestAccess,
