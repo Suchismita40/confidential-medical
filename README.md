@@ -246,20 +246,40 @@ export circuit submitAccessProof(datasetId: Bytes<32>, patientRecordHash: Bytes<
 
 The MedEx frontend integrates directly with the **Midnight Lace** wallet extension via `@midnight-ntwrk/dapp-connector-api` v4:
 
-```mermaid
-stateDiagram-v2
-    [*] --> DISCONNECTED
-    DISCONNECTED --> CONNECTING : User Clicks "Connect Lace"
-    CONNECTING --> AUTHORIZED : provider.connect("preprod") Resolved
-    CONNECTING --> DISCONNECTED : Extension Not Detected / User Rejected
-    AUTHORIZED --> ADDRESS_LOADING : Querying Live Unshielded Address
-    ADDRESS_LOADING --> CONNECTED : Valid mn_addr_preprod1... Returned
-    ADDRESS_LOADING --> ADDRESS_ERROR : Address Unavailable / Wallet Locked
-    CONNECTED --> WRONG_NETWORK : Network Mismatch Detected
-    CONNECTED --> STALE_SESSION : RPC Channel Shutdown / Extension Restart
-    STALE_SESSION --> CONNECTING : User Clicks "Reconnect Lace" (Fresh API)
-    ADDRESS_ERROR --> CONNECTING : User Clicks "Retry Lace" (Fresh API)
-    CONNECTED --> DISCONNECTED : User Disconnects
+```text
+══════════════════════════════════════════════════════════════
+            MIDNIGHT LACE WALLET LIFECYCLE
+══════════════════════════════════════════════════════════════
+
+[ DISCONNECTED ]
+       │
+       ├─ User Clicks "Connect Lace" (isConnectingRef guard)
+       ▼
+[ CONNECTING ]  ──→ User rejects / Extension missing ──→ [ DISCONNECTED ]
+       │
+       ├─ provider.connect("preprod") resolved
+       ▼
+[ AUTHORIZED ]
+       │
+       ├─ Querying connectedAPI.getUnshieldedAddress()
+       ▼
+[ ADDRESS_LOADING ] ──→ Address locked / error ────────→ [ ADDRESS_ERROR ]
+       │                                                        │
+       ├─ Valid mn_addr_preprod1... returned                    │ User clicks "Retry Lace"
+       ▼                                                        ▼
+[ CONNECTED ] ←─────────────────────────────────────────────────┘
+  │       │
+  │       ├─ Network mismatch detected ───────────────→ [ WRONG_NETWORK ]
+  │       │
+  │       ├─ Extension restart / Channel shutdown ────→ [ STALE_SESSION ]
+  │       │  (isChannelShutdownError detected)                  │
+  │       │                                                     │ User clicks "Reconnect Lace"
+  │       │                                                     ▼
+  │       └─────────────────────────────────────────────→ [ CONNECTING ]
+  │                                                        (Fresh ConnectedAPI)
+  └─ User clicks "Disconnect" ─────────────────────────→ [ DISCONNECTED ]
+
+══════════════════════════════════════════════════════════════
 ```
 
 ### Lifecycle Implementation Highlights:
