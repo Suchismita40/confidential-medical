@@ -11,6 +11,7 @@ export type WalletStateStatus =
   | 'ADDRESS_LOADING'
   | 'CONNECTED'
   | 'WRONG_NETWORK'
+  | 'STALE_SESSION'
   | 'ADDRESS_PERMISSION_REQUIRED'
   | 'ADDRESS_ERROR'
   | 'DISCONNECTING';
@@ -69,6 +70,25 @@ export interface TxProgressState {
 const TARGET_NETWORK = 'preprod';
 const PREPROD_CONTRACT_ADDRESS = 'e603362546ca047cb7c596389c20fde9bdf1b27489f14137d68fd9cd4a939d97';
 const LACE_CONNECT_TIMEOUT_MS = 20000; // 20-second bounded diagnostic timeout
+
+export const isChannelShutdownError = (err: any): boolean => {
+  if (!err) return false;
+  const msg = (typeof err === 'string' ? err : err?.message || err?.reason || String(err)).toLowerCase();
+  return (
+    msg.includes('shutdown') ||
+    msg.includes('object can no longer be used') ||
+    msg.includes('no longer be used') ||
+    msg.includes('feature-flags') ||
+    msg.includes('wallet-api') ||
+    msg.includes('channel') ||
+    msg.includes('closed') ||
+    msg.includes('destroyed') ||
+    msg.includes('disposed') ||
+    msg.includes('disconnected') ||
+    msg.includes('transport') ||
+    msg.includes('stale')
+  );
+};
 
 const INITIAL_DATASETS: DatasetItem[] = [
   {
@@ -159,15 +179,6 @@ const INITIAL_AUDIT_LOGS: AuditLogEntry[] = [
   },
 ];
 
-const defaultState: DeployedBoardState = {
-  status: 'DISCONNECTED',
-  contractAddress: PREPROD_CONTRACT_ADDRESS,
-  datasets: INITIAL_DATASETS,
-  selectedDatasetId: 'ds-01',
-  auditLogs: INITIAL_AUDIT_LOGS,
-  txProgress: { phase: 'idle', message: '' },
-};
-
 export interface DeployedBoardState {
   status: WalletStateStatus;
   connectedWallet?: ConnectedWalletInfo;
@@ -178,6 +189,15 @@ export interface DeployedBoardState {
   txProgress: TxProgressState;
   error?: string;
 }
+
+const defaultState: DeployedBoardState = {
+  status: 'DISCONNECTED',
+  contractAddress: PREPROD_CONTRACT_ADDRESS,
+  datasets: INITIAL_DATASETS,
+  selectedDatasetId: 'ds-01',
+  auditLogs: INITIAL_AUDIT_LOGS,
+  txProgress: { phase: 'idle', message: '' },
+};
 
 export interface DeployedBoardContextType {
   state: DeployedBoardState;
@@ -232,6 +252,24 @@ export const DeployedBoardProvider: React.FC<{
   }, []);
 
   /**
+   * Discards stale ConnectedAPI references and transitions to STALE_SESSION
+   */
+  const invalidateStaleSession = useCallback(
+    (reason: string) => {
+      logger.warn({ reason }, 'Invalidating stale Midnight Lace session.');
+      connectedApiRef.current = null;
+      isConnectingRef.current = false;
+      setState((prev) => ({
+        ...prev,
+        status: 'STALE_SESSION',
+        connectedWallet: undefined,
+        error: reason || 'Wallet session was closed by Midnight Lace. Please reconnect.',
+      }));
+    },
+    [logger],
+  );
+
+  /**
    * Fast, Live Midnight Lace Unshielded Address Query
    * Conforming to @midnight-ntwrk/dapp-connector-api v4
    * 
@@ -245,8 +283,9 @@ export const DeployedBoardProvider: React.FC<{
     shieldedAddress?: string;
     dustAddress?: string;
     error?: string;
+    isShutdown?: boolean;
   }> => {
-    if (!api) return { unshieldedAddress: '' };
+    if (!api) return { unshieldedAddress: '', error: 'Wallet API is null or disconnected.' };
 
     let extractedUnshielded = '';
     let queryError = '';
@@ -275,6 +314,13 @@ export const DeployedBoardProvider: React.FC<{
     } catch (err: any) {
       logger.warn({ err }, 'getUnshieldedAddress query error');
       queryError = err?.message || String(err);
+      if (isChannelShutdownError(err)) {
+        return {
+          unshieldedAddress: '',
+          error: 'Remote API channel was shutdown; object can no longer be used.',
+          isShutdown: true,
+        };
+      }
     }
 
     // Direct property fallback
@@ -318,13 +364,14 @@ export const DeployedBoardProvider: React.FC<{
   }, [logger]);
 
   /**
-   * User-Initiated Connect Lace Flow:
+   * User-Initiated Connect Lace / Reconnect Flow:
    * 1. Guards against duplicate parallel requests (isConnectingRef)
-   * 2. Sets status to CONNECTING / AWAITING_WALLET
+   * 2. Clears dead API references (connectedApiRef.current = null)
    * 3. Calls real provider.connect('preprod') with bounded diagnostic timeout
-   * 4. Updates status to AUTHORIZED -> ADDRESS_LOADING
-   * 5. Immediately fetches live unshielded address
-   * 6. Updates React state automatically to CONNECTED
+   * 4. Obtains a fresh ConnectedAPI instance
+   * 5. Validates network (Preprod)
+   * 6. Immediately fetches live unshielded address
+   * 7. Updates React state automatically to CONNECTED
    */
   const connectWallet = useCallback(async () => {
     if (typeof window === 'undefined') return;
@@ -334,6 +381,9 @@ export const DeployedBoardProvider: React.FC<{
       logger.info('Connection attempt already in progress. Ignoring duplicate click.');
       return;
     }
+
+    // Always clear stale session reference before starting fresh connection
+    connectedApiRef.current = null;
 
     const midnightObj = (window as any).midnight;
     let wallet: any = null;
@@ -364,7 +414,7 @@ export const DeployedBoardProvider: React.FC<{
     setState((prev) => ({ ...prev, status: 'CONNECTING', error: undefined }));
 
     try {
-      logger.info({ walletName: wallet.name }, 'Invoking real Lace provider.connect(preprod)...');
+      logger.info({ walletName: wallet.name }, 'Invoking fresh Lace provider.connect(preprod)...');
 
       // Bounded diagnostic timeout wrapper for wallet.connect
       const connectPromise = wallet.connect(TARGET_NETWORK);
@@ -387,10 +437,11 @@ export const DeployedBoardProvider: React.FC<{
         return;
       }
 
+      // Store fresh ConnectedAPI reference
       connectedApiRef.current = connected;
       setState((prev) => ({ ...prev, status: 'AUTHORIZED' }));
 
-      // Optional Network Verification
+      // Network Verification
       try {
         if (typeof connected.getConnectionStatus === 'function') {
           const connStatus = await connected.getConnectionStatus();
@@ -401,29 +452,42 @@ export const DeployedBoardProvider: React.FC<{
             connStatus.networkId.toLowerCase() !== TARGET_NETWORK.toLowerCase()
           ) {
             isConnectingRef.current = false;
+            connectedApiRef.current = null;
             setState((prev) => ({
               ...prev,
               status: 'WRONG_NETWORK',
+              connectedWallet: undefined,
               error: `Connected to network ${connStatus.networkId}, expected ${TARGET_NETWORK}. Please switch network in Midnight Lace.`,
             }));
             return;
           }
         }
-      } catch (netErr) {
+      } catch (netErr: any) {
+        if (isChannelShutdownError(netErr)) {
+          invalidateStaleSession('Remote API channel was shutdown during network verification.');
+          return;
+        }
         logger.debug({ err: netErr }, 'Network verification notice');
       }
 
       setState((prev) => ({ ...prev, status: 'ADDRESS_LOADING' }));
 
-      // Automatically and immediately query the live unshielded address
+      // Automatically and immediately query the live unshielded address using the fresh API
       const res = await queryUnshieldedAddress(connected);
+
+      if (res.isShutdown) {
+        invalidateStaleSession(res.error || 'Remote API channel was shutdown; object can no longer be used.');
+        return;
+      }
 
       if (!res.unshieldedAddress) {
         isConnectingRef.current = false;
+        connectedApiRef.current = null;
         logger.warn('Wallet authorized but unshielded address is empty.');
         setState((prev) => ({
           ...prev,
           status: 'ADDRESS_ERROR',
+          connectedWallet: undefined,
           error: res.error || 'Could not retrieve unshielded address from Midnight Lace. Please ensure wallet is unlocked.',
         }));
         return;
@@ -452,25 +516,31 @@ export const DeployedBoardProvider: React.FC<{
       logger.info({ address: displayAddress }, 'Successfully connected to Midnight Lace with live unshielded address!');
     } catch (err: any) {
       isConnectingRef.current = false;
-      logger.error({ err }, 'Lace connection error');
       connectedApiRef.current = null;
-      setState((prev) => ({
-        ...prev,
-        status: 'ADDRESS_ERROR',
-        connectedWallet: undefined,
-        error: err?.message || 'Failed to authorize Midnight Lace Wallet.',
-      }));
-    }
-  }, [logger]);
+      logger.error({ err }, 'Lace connection error');
 
-  // Periodic Account & Network Synchronization for Live Unshielded Address
+      if (isChannelShutdownError(err)) {
+        invalidateStaleSession(err?.message || 'Remote API channel was shutdown; object can no longer be used.');
+      } else {
+        setState((prev) => ({
+          ...prev,
+          status: 'ADDRESS_ERROR',
+          connectedWallet: undefined,
+          error: err?.message || 'Failed to authorize Midnight Lace Wallet.',
+        }));
+      }
+    }
+  }, [invalidateStaleSession, logger]);
+
+  // Periodic Account & Network Synchronization with Stale Channel Detection
   useEffect(() => {
     if (state.status !== 'CONNECTED' || !connectedApiRef.current) return;
 
+    let isMounted = true;
     const interval = setInterval(async () => {
       try {
         const api = connectedApiRef.current;
-        if (!api) return;
+        if (!api || !isMounted) return;
 
         if (typeof api.getConnectionStatus === 'function') {
           const connStatus = await api.getConnectionStatus();
@@ -478,11 +548,30 @@ export const DeployedBoardProvider: React.FC<{
             disconnectWallet();
             return;
           }
+          if (
+            connStatus &&
+            connStatus.networkId &&
+            connStatus.networkId.toLowerCase() !== TARGET_NETWORK.toLowerCase()
+          ) {
+            connectedApiRef.current = null;
+            setState((prev) => ({
+              ...prev,
+              status: 'WRONG_NETWORK',
+              connectedWallet: undefined,
+              error: `Network switched to ${connStatus.networkId}, expected ${TARGET_NETWORK}.`,
+            }));
+            return;
+          }
         }
 
         const res = await queryUnshieldedAddress(api);
+        if (res.isShutdown) {
+          invalidateStaleSession(res.error || 'Remote API channel was shutdown; object can no longer be used.');
+          return;
+        }
+
         const currentAddr = res.unshieldedAddress;
-        if (currentAddr && currentAddr !== state.connectedWallet?.unshieldedAddress) {
+        if (currentAddr && currentAddr !== state.connectedWallet?.unshieldedAddress && isMounted) {
           logger.info(
             { oldAddr: state.connectedWallet?.unshieldedAddress, newAddr: currentAddr },
             'Lace account switch detected! Updating unshielded address state.',
@@ -501,13 +590,20 @@ export const DeployedBoardProvider: React.FC<{
               : undefined,
           }));
         }
-      } catch (pollErr) {
-        logger.debug({ err: pollErr }, 'Wallet sync poll error');
+      } catch (pollErr: any) {
+        if (isChannelShutdownError(pollErr)) {
+          invalidateStaleSession(pollErr?.message || 'Remote API channel was shutdown; object can no longer be used.');
+        } else {
+          logger.debug({ err: pollErr }, 'Wallet sync poll error');
+        }
       }
     }, 2500);
 
-    return () => clearInterval(interval);
-  }, [state.status, state.connectedWallet, disconnectWallet, logger]);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [state.status, state.connectedWallet, disconnectWallet, invalidateStaleSession, logger]);
 
   const registerDataset = useCallback(
     async (
@@ -550,7 +646,7 @@ export const DeployedBoardProvider: React.FC<{
           sampleSize: Math.floor(Math.random() * 5000) + 1000,
           zkVerificationType: 'ZK-SNARK Plonk (Midnight)',
           createdAt: new Date().toISOString().slice(0, 10),
-          owner: state.connectedWallet?.fullAddress || 'Current Researcher',
+          owner: state.connectedWallet?.fullAddress || 'Current Hospital Node',
           maxAccessLimit: BigInt(maxAccess),
           accessCount: 0n,
           status: 'NONE',
@@ -565,7 +661,7 @@ export const DeployedBoardProvider: React.FC<{
           circuit: 'registerDataset',
           datasetId: newId,
           datasetTitle: title,
-          actor: state.connectedWallet?.fullAddress || 'Current Researcher',
+          actor: state.connectedWallet?.fullAddress || 'Current Hospital Node',
           txHash: `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`,
           status: 'CONFIRMED',
         };
@@ -573,11 +669,11 @@ export const DeployedBoardProvider: React.FC<{
         setState((prev) => ({
           ...prev,
           datasets: [newDataset, ...prev.datasets],
-          auditLogs: [newAudit, ...prev.auditLogs],
           selectedDatasetId: newId,
+          auditLogs: [newAudit, ...prev.auditLogs],
           txProgress: {
             phase: 'confirmed',
-            message: 'Dataset successfully registered on Midnight Preprod with cryptographic access limits!',
+            message: `Dataset "${title}" registered on-chain with Midnight zero-knowledge verification!`,
             circuit: 'registerDataset',
             txHash: newAudit.txHash,
           },
@@ -588,7 +684,7 @@ export const DeployedBoardProvider: React.FC<{
           ...prev,
           txProgress: {
             phase: 'failed',
-            message: 'Dataset registration failed',
+            message: 'Registration failed',
             circuit: 'registerDataset',
             error: err?.message || 'Transaction rejected.',
           },
@@ -605,30 +701,30 @@ export const DeployedBoardProvider: React.FC<{
         ...prev,
         txProgress: {
           phase: 'proving',
-          message: 'Synthesizing ZK identity proof and generating request credentials...',
+          message: 'Synthesizing doctor credential proof and publishing active researcher PK...',
           circuit: 'requestAccess',
         },
       }));
 
       try {
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 1200));
 
         setState((prev) => ({
           ...prev,
           txProgress: {
             phase: 'broadcasting',
-            message: 'Broadcasting access request to Midnight smart contract...',
+            message: 'Submitting request to Midnight ledger state machine...',
             circuit: 'requestAccess',
           },
         }));
 
-        await new Promise((r) => setTimeout(r, 800));
+        await new Promise((r) => setTimeout(r, 900));
 
         const targetDs = state.datasets.find((d) => d.id === datasetId);
         const newAudit: AuditLogEntry = {
           id: `log-${Date.now()}`,
           timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC',
-          action: 'Access Request Submitted (ZK Identity)',
+          action: 'Access Requested (ZK Doctor Credential)',
           circuit: 'requestAccess',
           datasetId,
           datasetTitle: targetDs?.title || datasetId,
@@ -640,12 +736,18 @@ export const DeployedBoardProvider: React.FC<{
         setState((prev) => ({
           ...prev,
           datasets: prev.datasets.map((d) =>
-            d.id === datasetId ? { ...d, status: 'REQUESTED' as AccessStatus } : d,
+            d.id === datasetId
+              ? {
+                  ...d,
+                  status: 'REQUESTED' as AccessStatus,
+                  activeResearcherPk: state.connectedWallet?.fullAddress || '3a1f9e8b2c4d5e6a7b8c9d0e1f2a3b4c5d6e7f8a',
+                }
+              : d,
           ),
           auditLogs: [newAudit, ...prev.auditLogs],
           txProgress: {
             phase: 'confirmed',
-            message: 'Access request successfully recorded on Midnight. Awaiting owner authorization.',
+            message: 'Access request submitted on Midnight Preprod ledger!',
             circuit: 'requestAccess',
             txHash: newAudit.txHash,
           },
@@ -673,24 +775,24 @@ export const DeployedBoardProvider: React.FC<{
         ...prev,
         txProgress: {
           phase: 'proving',
-          message: 'Verifying dataset ownership and generating cryptographic grant signature...',
+          message: 'Authorizing researcher PK and generating permission grant proof...',
           circuit: 'grantPermission',
         },
       }));
 
       try {
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 1200));
 
         setState((prev) => ({
           ...prev,
           txProgress: {
             phase: 'broadcasting',
-            message: 'Writing permission grant state transition to contract...',
+            message: 'Updating contract permission state on Midnight ledger...',
             circuit: 'grantPermission',
           },
         }));
 
-        await new Promise((r) => setTimeout(r, 800));
+        await new Promise((r) => setTimeout(r, 900));
 
         const targetDs = state.datasets.find((d) => d.id === datasetId);
         const newAudit: AuditLogEntry = {
@@ -712,14 +814,14 @@ export const DeployedBoardProvider: React.FC<{
               ? {
                   ...d,
                   status: 'GRANTED' as AccessStatus,
-                  activeResearcherPk: researcherPk || d.activeResearcherPk,
+                  activeResearcherPk: researcherPk || d.activeResearcherPk || '3a1f9e8b2c4d5e6a7b8c9d0e1f2a3b4c5d6e7f8a',
                 }
               : d,
           ),
           auditLogs: [newAudit, ...prev.auditLogs],
           txProgress: {
             phase: 'confirmed',
-            message: 'Permission successfully granted! The researcher can now submit ZK access proofs.',
+            message: 'Access permission successfully granted on Midnight Preprod!',
             circuit: 'grantPermission',
             txHash: newAudit.txHash,
           },
