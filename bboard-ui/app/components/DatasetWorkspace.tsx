@@ -359,7 +359,7 @@ export function DatasetWorkspace() {
               <label className="block text-slate-200 font-semibold mb-1">Domain Category</label>
               <select
                 value={regCategory}
-                onChange={(e) => setRegCategory(e.target.value as any)}
+                onChange={(e) => setRegCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slateSurface-border bg-midnight-950 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400/30"
               >
                 <option value="Oncology & Genomics">Oncology & Genomics</option>

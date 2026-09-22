@@ -63,7 +63,7 @@ let _isFallbackMode = false;
 
 class MockBBoardAPI implements DeployedBBoardAPI {
   readonly deployedContractAddress: ContractAddress;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+   
   readonly deployedContract: any = {} as any;
   private readonly _state$: RxBehaviorSubject<BBoardDerivedState>;
   readonly state$: RxObservable<BBoardDerivedState>;

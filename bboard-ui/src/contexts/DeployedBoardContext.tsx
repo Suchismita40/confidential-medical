@@ -425,7 +425,7 @@ export const DeployedBoardProvider: React.FC<{
         ),
       );
 
-      const connected = (await Promise.race([connectPromise, timeoutPromise])) as any;
+      const connected = (await Promise.race([connectPromise, timeoutPromise]));
 
       if (!connected) {
         isConnectingRef.current = false;
@@ -739,7 +739,7 @@ export const DeployedBoardProvider: React.FC<{
             d.id === datasetId
               ? {
                   ...d,
-                  status: 'REQUESTED' as AccessStatus,
+                  status: 'REQUESTED',
                   activeResearcherPk: state.connectedWallet?.fullAddress || '3a1f9e8b2c4d5e6a7b8c9d0e1f2a3b4c5d6e7f8a',
                 }
               : d,
@@ -813,7 +813,7 @@ export const DeployedBoardProvider: React.FC<{
             d.id === datasetId
               ? {
                   ...d,
-                  status: 'GRANTED' as AccessStatus,
+                  status: 'GRANTED',
                   activeResearcherPk: researcherPk || d.activeResearcherPk || '3a1f9e8b2c4d5e6a7b8c9d0e1f2a3b4c5d6e7f8a',
                 }
               : d,
@@ -1035,7 +1035,7 @@ export const DeployedBoardProvider: React.FC<{
             d.id === datasetId
               ? {
                   ...d,
-                  status: 'REVOKED' as AccessStatus,
+                  status: 'REVOKED',
                   activeResearcherPk: undefined,
                 }
               : d,
