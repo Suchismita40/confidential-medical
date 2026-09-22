@@ -43,26 +43,26 @@ MedEx enables accredited healthcare organizations, academic medical centers, and
 
 ---
 
-# ??? Application Interface & Workstation Views
+# 🖥️ Application Interface & Workstation Views
 
-## 1. Overview Dashboard & Telemetry
-![Overview Page](docs/screenshots/overview-page.png)
+## 1. OVERVIEW Page
+![OVERVIEW Page](docs/screenshots/overview-page.png)
 
-The overview dashboard provides an executive telemetry view of the Private Medical Research Data Exchange, presenting live Midnight Preprod network status, zero-knowledge verification statistics, registered cohort counters, authentic Midnight Lace Wallet connectivity, and the foundational dual-state privacy architecture.
-
----
-
-## 2. Dataset Workspace & Cohort Registry
-![Dataset Register](docs/screenshots/dataset-register.png)
-
-The Dataset Workspace enables accredited healthcare organizations to register clinical cohorts with on-chain domain metadata (*Oncology & Genomics*, *Cardiology*, *Neurology*, *Immunology*, *Pediatrics*, *Ophthalmology*), filter and search cohorts, inspect cohort metadata and quotas, and manage ZK access proofs without exposing private patient records.
+*The Overview dashboard delivers a centralized clinical telemetry workstation on Midnight Preprod, monitoring live network connectivity, cryptographic proof counts, and active zero-knowledge verification pipelines. Healthcare institutions can seamlessly inspect real-time platform metrics, explore registered research cohorts, and manage institutional access privileges within an authenticated Midnight Lace environment.*
 
 ---
 
-## 3. Cryptographic Audit Trail & Activity Telemetry
-![Activity](docs/screenshots/activity.png)
+## 2. CONFIDENTIAL PRESCRIPTIONS
+![CONFIDENTIAL PRESCRIPTIONS](docs/screenshots/confidential-prescriptions.png)
 
-The Activity tab provides an immutable on-chain cryptographic audit trail capturing verifiable transaction hashes, executed Compact circuits, disclosed zero-knowledge proof commitments, and real-time infrastructure telemetry for Midnight Preprod node synchronization and prover connectivity.
+*The Confidential Prescriptions and Research Permissions interface provides granular zero-knowledge access governance across active clinical cohort contracts. Hospital data stewards can enforce cryptographic query quotas, review pending investigator authorizations, and safely verify access proofs without ever disclosing sensitive patient identities, private prescriptions, or raw clinical records.*
+
+---
+
+## 3. NEW DATASET ENTRY
+![NEW DATASET ENTRY](docs/screenshots/new-dataset-entry.png)
+
+*The New Dataset Entry workstation allows certified healthcare providers and academic research centers to onboard novel clinical trial datasets with zero-knowledge commitments directly to the Midnight Preprod ledger. Users define standardized domain categories, initial cryptographic query allowances, and institutional credentials, ensuring tamper-proof cohort registration under full HIPAA and GDPR compliance.*
 
 ---
 
