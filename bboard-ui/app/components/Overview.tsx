@@ -1,8 +1,27 @@
 'use client';
 
 import React from 'react';
-import { Shield, Lock, Database, FileCheck, Layers, ArrowRight, CheckCircle2, Key, Users, Activity } from 'lucide-react';
+import {
+  Shield,
+  Database,
+  Users,
+  Activity,
+  FileCheck,
+  Key,
+  ArrowRight,
+  Layers,
+  Lock,
+  CheckCircle2,
+  ExternalLink,
+  Sparkles,
+  Building2,
+  Cpu,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
 import { useDeployedBoardContext } from '../../src/hooks/useDeployedBoardContext';
+import { Button, Badge, Card } from './ui';
+import { AccessWorkflowStepper } from './AccessWorkflowStepper';
 
 interface OverviewProps {
   setActiveTab: (tab: string) => void;
@@ -10,170 +29,228 @@ interface OverviewProps {
 
 export function Overview({ setActiveTab }: OverviewProps) {
   const { state } = useDeployedBoardContext();
+
   const totalDatasets = state.datasets.length;
   const activeGranted = state.datasets.filter((d) => d.status === 'GRANTED').length;
   const pendingRequests = state.datasets.filter((d) => d.status === 'REQUESTED').length;
-  const totalAccessCount = state.datasets.reduce((acc, d) => acc + Number(d.accessCount), 0);
   const totalAuditLogs = state.auditLogs.length;
+  const totalAccessCount = state.datasets.reduce((acc, d) => acc + Number(d.accessCount), 0);
 
   return (
-    <div className="space-y-10">
-      {/* Hero Banner */}
-      <div className="bg-white rounded-3xl border border-surface-border p-8 sm:p-10 shadow-card relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-olive-50 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
+    <div className="space-y-10 animate-in fade-in duration-300">
+      {/* Hero Banner with Biomedical Glass Accent */}
+      <div className="relative overflow-hidden rounded-3xl border border-slateSurface-border bg-gradient-to-br from-midnight-900 via-midnight-850 to-midnight-950 p-8 sm:p-12 shadow-card">
+        {/* Subtle Background Glows */}
+        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 -mb-12 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
 
-        <div className="max-w-3xl space-y-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-olive-50 border border-olive-200 rounded-full text-xs font-semibold text-olive-800">
-            <Shield className="w-3.5 h-3.5" />
-            <span>Midnight Dual-State Architecture & Zero-Knowledge Circuits</span>
+        <div className="relative z-10 max-w-4xl space-y-6">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Badge variant="INFO" label="Verified Midnight Preprod" size="md" pulse />
+            <Badge variant="CATEGORY" label="Compact Circuit Architecture" size="md" />
+            <Badge variant="CONFIRMED" label="Zero-Knowledge HIPAA Model" size="md" />
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-olive-950 tracking-tight leading-tight">
-            Confidential Medical Research Data Exchange
-          </h1>
+          <div className="space-y-3">
+            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+              Confidential Medical Research <br className="hidden sm:block" />
+              <span className="bg-gradient-to-r from-teal-400 via-teal-300 to-cyan-300 bg-clip-text text-transparent">
+                Data Exchange Network
+              </span>
+            </h1>
 
-          <p className="text-base text-mutedText leading-relaxed">
-            Enable accredited healthcare institutions and researchers to prove clinical data access eligibility, 
-            verify study cohorts, and execute zero-knowledge queries — without disclosing patient PII, medical 
-            credentials, or private decryption keys on-chain.
-          </p>
+            <p className="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
+              Empowering healthcare institutions, academic hospitals, and research labs to discover clinical cohorts,
+              verify investigator credentials, and execute zero-knowledge study queries?without disclosing sensitive patient
+              PII, private keys, or raw medical data on-chain.
+            </p>
+          </div>
 
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <button
+          <div className="flex flex-wrap items-center gap-3.5 pt-2">
+            <Button
+              variant="primary"
+              size="lg"
+              leftIcon={<Database className="w-5 h-5" />}
+              rightIcon={<ArrowRight className="w-4 h-4" />}
               onClick={() => setActiveTab('datasets')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-olive-800 hover:bg-olive-900 text-white font-semibold rounded-xl text-sm transition-all shadow-subtle hover:shadow-hover"
             >
-              <Database className="w-4 h-4" />
-              <span>Explore Datasets ({totalDatasets})</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              Explore Clinical Datasets ({totalDatasets})
+            </Button>
 
-            <button
+            <Button
+              variant="secondary"
+              size="lg"
+              leftIcon={<Key className="w-5 h-5 text-teal-400" />}
               onClick={() => setActiveTab('permissions')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-surface-bg hover:bg-olive-50 border border-surface-border text-olive-900 font-semibold rounded-xl text-sm transition-all"
             >
-              <Key className="w-4 h-4 text-olive-700" />
-              <span>Permissions & Quotas ({pendingRequests} pending)</span>
-            </button>
+              Permissions & Quotas ({pendingRequests} Pending)
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Real-time Telemetry Cards */}
+      {/* Real-time Telemetry Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-white rounded-2xl border border-surface-border p-6 shadow-subtle space-y-2">
-          <div className="flex items-center justify-between text-mutedText">
-            <span className="text-xs font-semibold uppercase tracking-wider">Registered Datasets</span>
-            <Database className="w-4 h-4 text-olive-700" />
+        <Card interactive glow className="space-y-3">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider">Registered Cohorts</span>
+            <div className="p-2 rounded-xl bg-teal-950/80 text-teal-400 border border-teal-500/30">
+              <Database className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-3xl font-extrabold text-olive-900">{totalDatasets}</div>
-          <p className="text-xs text-mutedText">Verified on Midnight Preprod</p>
-        </div>
+          <div className="text-3xl font-extrabold text-white font-mono">{totalDatasets}</div>
+          <p className="text-xs text-slate-400 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+            <span>Indexed on Midnight Preprod</span>
+          </p>
+        </Card>
 
-        <div className="bg-white rounded-2xl border border-surface-border p-6 shadow-subtle space-y-2">
-          <div className="flex items-center justify-between text-mutedText">
-            <span className="text-xs font-semibold uppercase tracking-wider">Active Permissions</span>
-            <Users className="w-4 h-4 text-emerald-600" />
+        <Card interactive glow className="space-y-3">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider">Active Permissions</span>
+            <div className="p-2 rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">
+              <Users className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-3xl font-extrabold text-emerald-800">{activeGranted}</div>
-          <p className="text-xs text-mutedText">Granted via Compact circuits</p>
-        </div>
+          <div className="text-3xl font-extrabold text-emerald-400 font-mono">{activeGranted}</div>
+          <p className="text-xs text-slate-400 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span>Granted via Compact circuits</span>
+          </p>
+        </Card>
 
-        <div className="bg-white rounded-2xl border border-surface-border p-6 shadow-subtle space-y-2">
-          <div className="flex items-center justify-between text-mutedText">
-            <span className="text-xs font-semibold uppercase tracking-wider">ZK Proof Queries</span>
-            <Activity className="w-4 h-4 text-olive-700" />
+        <Card interactive glow className="space-y-3">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider">ZK Proof Queries</span>
+            <div className="p-2 rounded-xl bg-cyan-950/80 text-cyan-400 border border-cyan-500/30">
+              <Activity className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-3xl font-extrabold text-olive-900">{totalAccessCount}</div>
-          <p className="text-xs text-mutedText">Disclosed proof commitments</p>
-        </div>
+          <div className="text-3xl font-extrabold text-white font-mono">{totalAccessCount}</div>
+          <p className="text-xs text-slate-400 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+            <span>Disclosed proof commitments</span>
+          </p>
+        </Card>
 
-        <div className="bg-white rounded-2xl border border-surface-border p-6 shadow-subtle space-y-2">
-          <div className="flex items-center justify-between text-mutedText">
-            <span className="text-xs font-semibold uppercase tracking-wider">Cryptographic Logs</span>
-            <FileCheck className="w-4 h-4 text-olive-700" />
+        <Card interactive glow className="space-y-3">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider">Cryptographic Logs</span>
+            <div className="p-2 rounded-xl bg-indigo-950/80 text-indigo-400 border border-indigo-500/30">
+              <FileCheck className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-3xl font-extrabold text-olive-900">{totalAuditLogs}</div>
-          <p className="text-xs text-mutedText">Immutable audit trace</p>
-        </div>
+          <div className="text-3xl font-extrabold text-white font-mono">{totalAuditLogs}</div>
+          <p className="text-xs text-slate-400 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+            <span>Immutable audit trace</span>
+          </p>
+        </Card>
       </div>
 
-      {/* Privacy Architecture Model */}
-      <div className="bg-white rounded-3xl border border-surface-border p-8 shadow-card space-y-6">
+      {/* Interactive ZK Workflow Stepper */}
+      <AccessWorkflowStepper />
+
+      {/* Privacy Architecture Dual-State Matrix */}
+      <div className="glass-card rounded-3xl border border-slateSurface-border p-6 sm:p-10 shadow-card space-y-8">
         <div>
-          <h2 className="text-xl font-bold text-olive-900 flex items-center gap-2">
-            <Layers className="w-5 h-5 text-olive-700" />
-            Midnight Zero-Knowledge Privacy Architecture
+          <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
+            <Layers className="w-5 h-5 text-teal-400" />
+            <span>Midnight Zero-Knowledge Privacy Architecture</span>
           </h2>
-          <p className="text-xs text-mutedText mt-1">
-            Detailed separation between transparent on-chain public ledger state and off-chain secret prover witness state.
+          <p className="text-xs text-slate-400 mt-1">
+            Strict cryptographic partition between transparent on-chain public ledger state and confidential off-chain prover witness state.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Public Ledger State */}
-          <div className="bg-surface-bg/70 rounded-2xl border border-surface-border p-6 space-y-4">
-            <div className="flex items-center gap-2 font-bold text-sm text-olive-900 border-b border-surface-border pb-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-olive-600"></span>
-              <span>Public Ledger State (Transparent On-Chain)</span>
+          <div className="bg-midnight-900/90 rounded-2xl border border-slateSurface-border p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slateSurface-border pb-3.5">
+              <div className="flex items-center gap-2 font-bold text-sm text-cyan-300">
+                <Eye className="w-4 h-4 text-cyan-400" />
+                <span>Public Ledger State (Transparent On-Chain)</span>
+              </div>
+              <Badge variant="INFO" size="sm" label="Substrate Nodes" />
             </div>
 
-            <div className="space-y-3 text-xs text-mutedText">
-              <div className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-olive-700 shrink-0 mt-0.5" />
+            <div className="space-y-3.5 text-xs text-slate-300">
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-midnight-950 border border-slateSurface-border">
+                <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold text-olive-900">Dataset Metadata & Categories:</span>
-                  <p>Dataset title, category, and sample counts for global research cohort discovery.</p>
+                  <span className="font-bold text-white">Dataset Title & Domain Category:</span>
+                  <p className="text-slate-400 mt-0.5">
+                    Categorized metadata (<code className="font-mono text-cyan-300">datasetTitle</code>, <code className="font-mono text-cyan-300">datasetCategory</code>) published for global multi-institutional discovery.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-olive-700 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-midnight-950 border border-slateSurface-border">
+                <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold text-olive-900">Access Quota Counters:</span>
-                  <p>Enforces maximum query limit (<code className="font-mono text-olive-800">maxAccessLimit</code>) and current count (<code className="font-mono text-olive-800">accessCount</code>).</p>
+                  <span className="font-bold text-white">Access Quota Rate-Limit Counters:</span>
+                  <p className="text-slate-400 mt-0.5">
+                    Enforces maximum query limit (<code className="font-mono text-cyan-300">maxAccessLimit</code>) and verified query count (<code className="font-mono text-cyan-300">accessCount</code>).
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-olive-700 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-midnight-950 border border-slateSurface-border">
+                <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold text-olive-900">Disclosed Proof Hashes:</span>
-                  <p>Cryptographic hash commitment (<code className="font-mono text-olive-800">lastProofHash</code>) verifying valid query execution without revealing input data.</p>
+                  <span className="font-bold text-white">Disclosed ZK Proof Commitments:</span>
+                  <p className="text-slate-400 mt-0.5">
+                    Cryptographic proof hash (<code className="font-mono text-cyan-300">lastProofHash</code>) disclosed via <code className="font-mono text-cyan-300">disclose()</code> verifying query legitimacy.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Private Witness State */}
-          <div className="bg-olive-900 text-white rounded-2xl border border-olive-950 p-6 space-y-4">
-            <div className="flex items-center gap-2 font-bold text-sm text-emerald-300 border-b border-olive-800 pb-3">
-              <Lock className="w-4 h-4 text-emerald-400" />
-              <span>Private Witness State (Secret Off-Chain in Prover)</span>
+          <div className="bg-gradient-to-br from-teal-950/40 via-midnight-900 to-midnight-950 rounded-2xl border border-teal-500/40 p-6 space-y-4 shadow-glowTeal">
+            <div className="flex items-center justify-between border-b border-teal-500/30 pb-3.5">
+              <div className="flex items-center gap-2 font-bold text-sm text-teal-300">
+                <EyeOff className="w-4 h-4 text-teal-400" />
+                <span>Private Witness State (Secret Off-Chain in Prover)</span>
+              </div>
+              <Badge variant="GRANTED" size="sm" label="100% Confidential" />
             </div>
 
-            <div className="space-y-3 text-xs text-olive-200">
-              <div className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 mt-1.5"></span>
+            <div className="space-y-3.5 text-xs text-slate-300">
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-midnight-950/90 border border-teal-500/20">
+                <Lock className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold text-white">Local Wallet Secret Key (<code className="font-mono text-emerald-300">localSecretKey</code>):</span>
-                  <p>Never leaves the user's browser; used for deterministic zero-knowledge public key derivation.</p>
+                  <span className="font-bold text-white">
+                    Local Wallet Secret Key (<code className="font-mono text-teal-300">localSecretKey</code>):
+                  </span>
+                  <p className="text-slate-400 mt-0.5">
+                    Never leaves the investigator's browser memory; used exclusively for deterministic ZK identity generation.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 mt-1.5"></span>
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-midnight-950/90 border border-teal-500/20">
+                <Lock className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold text-white">Medical License Credential (<code className="font-mono text-emerald-300">medicalCredentialSecret</code>):</span>
-                  <p>Doctor/researcher credentials verified locally inside ZK circuits without revealing identity.</p>
+                  <span className="font-bold text-white">
+                    Medical Credential Secret (<code className="font-mono text-teal-300">medicalCredentialSecret</code>):
+                  </span>
+                  <p className="text-slate-400 mt-0.5">
+                    Doctor/researcher credentials verified locally inside SNARK circuits without publishing identity.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 mt-1.5"></span>
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-midnight-950/90 border border-teal-500/20">
+                <Lock className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold text-white">Patient Record Key (<code className="font-mono text-emerald-300">patientRecordKey</code>):</span>
-                  <p>Symmetric decryption key for patient data. Remains 100% confidential and is never sent over the network.</p>
+                  <span className="font-bold text-white">
+                    Patient Record Symmetric Key (<code className="font-mono text-teal-300">patientRecordKey</code>):
+                  </span>
+                  <p className="text-slate-400 mt-0.5">
+                    Clinical record decryption key. Stays 100% secret in client memory and is never transmitted over any network.
+                  </p>
                 </div>
               </div>
             </div>
