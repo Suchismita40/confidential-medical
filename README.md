@@ -29,7 +29,7 @@ Experience the end-to-end interactive workflow of MedEx, demonstrating clinical 
 
 | Resource | Description | Status / Link |
 | :--- | :--- | :--- |
-| 🌐 **Live Web Application** | Production-ready clinical workstation deployed on Vercel | [https://med-research-fiem.vercel.app](https://med-research-fiem.vercel.app) |
+| 🌐 **Live Web Application** | Production-ready clinical workstation deployed on Vercel | [https://confidential-medical-bboard-ui.vercel.app/](https://confidential-medical-bboard-ui.vercel.app/) |
 | 🎥 **Walkthrough Video** | End-to-end video demonstration of MedEx features | [YouTube Walkthrough](https://youtu.be/GmmMhwnHK4Y) |
 | 📦 **GitHub Repository** | Verified open-source monorepo codebase | [Suchismita40/confidential-medical](https://github.com/Suchismita40/confidential-medical.git) |
 | ⚙️ **CI/CD Pipeline** | GitHub Actions build, test, and security workflows | [GitHub Actions CI](https://github.com/Suchismita40/confidential-medical/actions) |
