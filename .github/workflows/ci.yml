@@ -77,7 +77,7 @@ jobs:
         run: |
           echo "Compiling Compact smart contract circuits..."
           npm run compact
-          if [ ! -d "src/managed/bboard" ]; then
+          if [ ! -d "src/managed/medex" ]; then
             echo "ERROR: Compact compilation failed to produce managed circuit artifacts!"
             exit 1
           fi

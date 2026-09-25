@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   type CoinPublicKey,
@@ -11,32 +9,22 @@ import {
   LedgerParameters,
   ZswapSecretKeys,
   nativeToken,
-} from "@midnight-ntwrk/midnight-js-protocol/ledger";
-import {
-  type MidnightProvider,
-  type UnboundTransaction,
-  type WalletProvider,
-} from "@midnight-ntwrk/midnight-js-types";
-import { ttlOneHour, toHex } from "@midnight-ntwrk/midnight-js-utils";
-import { type WalletFacade } from "@midnight-ntwrk/wallet-sdk-facade";
-import type { Logger } from "pino";
-import * as Rx from "rxjs";
+} from '@midnight-ntwrk/midnight-js-protocol/ledger';
+import { type MidnightProvider, type UnboundTransaction, type WalletProvider } from '@midnight-ntwrk/midnight-js-types';
+import { ttlOneHour, toHex } from '@midnight-ntwrk/midnight-js-utils';
+import { type WalletFacade } from '@midnight-ntwrk/wallet-sdk-facade';
+import type { Logger } from 'pino';
+import * as Rx from 'rxjs';
 
-import { getInitialShieldedState } from "./wallet-utils.js";
-import {
-  type DustWalletOptions,
-  type EnvironmentConfiguration,
-  FluentWalletBuilder,
-} from "@midnight-ntwrk/testkit-js";
+import { getInitialShieldedState } from './wallet-utils.js';
+import { type DustWalletOptions, type EnvironmentConfiguration, FluentWalletBuilder } from '@midnight-ntwrk/testkit-js';
 
 type UnshieldedKeystore = {
   getPublicKey(): unknown;
   signData(payload: Uint8Array): string;
 };
 
-export class MidnightWalletProvider
-  implements MidnightProvider, WalletProvider
-{
+export class MidnightWalletProvider implements MidnightProvider, WalletProvider {
   logger: Logger;
   readonly env: EnvironmentConfiguration;
   readonly wallet: WalletFacade;
@@ -68,10 +56,7 @@ export class MidnightWalletProvider
     return this.zswapSecretKeys.encryptionPublicKey;
   }
 
-  async balanceTx(
-    tx: UnboundTransaction,
-    ttl: Date = ttlOneHour(),
-  ): Promise<FinalizedTransaction> {
+  async balanceTx(tx: UnboundTransaction, ttl: Date = ttlOneHour()): Promise<FinalizedTransaction> {
     let recipe;
     try {
       recipe = await this.wallet.balanceUnboundTransaction(
@@ -92,12 +77,10 @@ export class MidnightWalletProvider
           shieldedSecretKeys: this.zswapSecretKeys,
           dustSecretKey: this.dustSecretKey,
         },
-        { ttl, tokenKindsToBalance: ["shielded", "unshielded"] },
+        { ttl, tokenKindsToBalance: ['shielded', 'unshielded'] },
       );
     }
-    const signedRecipe = await this.wallet.signRecipe(recipe, (payload) =>
-      this.unshieldedKeystore.signData(payload),
-    );
+    const signedRecipe = await this.wallet.signRecipe(recipe, (payload) => this.unshieldedKeystore.signData(payload));
     return this.wallet.finalizeRecipe(signedRecipe);
   }
 
@@ -106,30 +89,22 @@ export class MidnightWalletProvider
     const syncedState = await Rx.firstValueFrom(this.wallet.state());
     const availableCoins = syncedState.unshielded.availableCoins || [];
     const unregistered = availableCoins.filter(
-      (coin) =>
-        coin.utxo.type === unshieldedRaw &&
-        coin.meta.registeredForDustGeneration === false,
+      (coin) => coin.utxo.type === unshieldedRaw && coin.meta.registeredForDustGeneration === false,
     );
     if (unregistered.length > 0) {
-      this.logger.info(
-        `Registering ${unregistered.length} NIGHT UTXO(s) for DUST generation...`,
-      );
+      this.logger.info(`Registering ${unregistered.length} NIGHT UTXO(s) for DUST generation...`);
       try {
         const recipe = await this.wallet.registerNightUtxosForDustGeneration(
           unregistered,
           this.unshieldedKeystore.getPublicKey() as any,
-          (payload) => this.unshieldedKeystore.signData(payload) as any,
+          (payload) => this.unshieldedKeystore.signData(payload),
         );
         const finalized = await this.wallet.finalizeRecipe(recipe);
         const txId = await this.wallet.submitTransaction(finalized);
-        this.logger.info(
-          `Dust registration transaction submitted on-chain! TxId: ${txId}`,
-        );
+        this.logger.info(`Dust registration transaction submitted on-chain! TxId: ${txId}`);
         return txId;
       } catch (err: unknown) {
-        this.logger.warn(
-          `Dust registration note: ${err instanceof Error ? err.message : String(err)}`,
-        );
+        this.logger.warn(`Dust registration note: ${err instanceof Error ? err.message : String(err)}`);
       }
     } else {
       this.logger.info(`NIGHT UTXOs already registered for dust generation.`);
@@ -142,13 +117,10 @@ export class MidnightWalletProvider
     for (let attempt = 1; attempt <= 10; attempt++) {
       try {
         const submittedId = await this.wallet.submitTransaction(tx);
-        let hex =
-          typeof submittedId === "string" ? submittedId : toHex(submittedId);
+        let hex = typeof submittedId === 'string' ? submittedId : toHex(submittedId);
         if (hex.length > 64) hex = hex.slice(-64);
-        else if (hex.length < 64) hex = hex.padStart(64, "0");
-        this.logger.info(
-          `Transaction submitted successfully on-chain! TxHash: ${hex}`,
-        );
+        else if (hex.length < 64) hex = hex.padStart(64, '0');
+        this.logger.info(`Transaction submitted successfully on-chain! TxHash: ${hex}`);
         return hex;
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
@@ -157,14 +129,11 @@ export class MidnightWalletProvider
         await new Promise((r) => setTimeout(r, 3000));
       }
     }
-    throw (
-      lastError ||
-      new Error("Transaction submission failed on Midnight Preprod network")
-    );
+    throw lastError || new Error('Transaction submission failed on Midnight Preprod network');
   }
 
   async start(): Promise<void> {
-    this.logger.info("Starting wallet...");
+    this.logger.info('Starting wallet...');
     await this.wallet.start(this.zswapSecretKeys, this.dustSecretKey);
   }
 
@@ -172,19 +141,13 @@ export class MidnightWalletProvider
     return this.wallet.stop();
   }
 
-  static async build(
-    logger: Logger,
-    env: EnvironmentConfiguration,
-    seed?: string,
-  ): Promise<MidnightWalletProvider> {
+  static async build(logger: Logger, env: EnvironmentConfiguration, seed?: string): Promise<MidnightWalletProvider> {
     const dustOptions: DustWalletOptions = {
       ledgerParams: LedgerParameters.initialParameters(),
-      additionalFeeOverhead:
-        env.walletNetworkId === "undeployed" ? 500_000_000_000_000_000n : 1_000n,
+      additionalFeeOverhead: env.walletNetworkId === 'undeployed' ? 500_000_000_000_000_000n : 1_000n,
       feeBlocksMargin: 5,
     };
-    const builder =
-      FluentWalletBuilder.forEnvironment(env).withDustOptions(dustOptions);
+    const builder = FluentWalletBuilder.forEnvironment(env).withDustOptions(dustOptions);
     const buildResult = seed
       ? await builder.withSeed(seed).buildWithoutStarting()
       : await builder.withRandomSeed().buildWithoutStarting();

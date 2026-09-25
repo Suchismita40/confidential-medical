@@ -5,7 +5,7 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 
 const config = tseslint.config(
   {
-    ignores: ['eslint.config.js', 'vitest.config.js', 'vitest.setup.js'],
+    ignores: ['eslint.config.js', 'vitest.config.js', 'vitest.setup.js', 'src/test_inspect.ts', 'dist/**'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,

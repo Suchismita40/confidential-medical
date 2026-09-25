@@ -17,5 +17,6 @@ export const CompiledMedExContractContract = CompiledContract.make<
 );
 
 export const CompiledBBoardContractContract = CompiledMedExContractContract;
-export type MedExContract = CompiledMedExContract.Contract<Witnesses.MedExPrivateState>;
+export type MedExContract =
+  CompiledMedExContract.Contract<Witnesses.MedExPrivateState>;
 export type BBoardContract = MedExContract;
