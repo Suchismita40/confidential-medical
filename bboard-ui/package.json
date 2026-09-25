@@ -6,9 +6,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "copy:keys": "mkdir -p ./public/keys ./public/zkir && cp -r ../contract/src/managed/bboard/keys/* ./public/keys/ && cp -r ../contract/src/managed/bboard/zkir/* ./public/zkir/",
+    "copy:keys": "mkdir -p ./public/keys ./public/zkir && cp -r ../contract/src/managed/medex/keys/* ./public/keys/ && cp -r ../contract/src/managed/medex/zkir/* ./public/zkir/",
     "build": "npm run build:deps && npm run copy:keys && next build",
-    "build:preview": "npm run copy:keys && rm -rf ./dist && tsc && vite build --mode preview && cp -r ../contract/src/managed/bboard/keys ./dist/keys && cp -r ../contract/src/managed/bboard/zkir ./dist/zkir",
+    "build:preview": "npm run copy:keys && rm -rf ./dist && tsc && vite build --mode preview && cp -r ../contract/src/managed/medex/keys ./dist/keys && cp -r ../contract/src/managed/medex/zkir ./dist/zkir",
     "build:vercel": "npm run build:deps && npm run copy:keys && next build",
     "build:start": "npm run build && npm run start",
     "build:start:preview": "npm run build:preview && npm run start",

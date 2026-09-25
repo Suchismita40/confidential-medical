@@ -148,7 +148,7 @@ export function PermissionsView() {
                           <Building2 className="w-3.5 h-3.5 text-teal-400" />
                           <span>{ds.institution}</span>
                         </span>
-                        <span>?</span>
+                        <span>•</span>
                         <span className="text-teal-300 font-medium">Domain: {ds.category}</span>
                       </div>
                     </div>

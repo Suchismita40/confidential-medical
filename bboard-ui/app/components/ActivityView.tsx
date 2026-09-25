@@ -27,7 +27,7 @@ export function ActivityView() {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [searchLog, setSearchLog] = useState('');
 
-  const PREPROD_CONTRACT = 'e603362546ca047cb7c596389c20fde9bdf1b27489f14137d68fd9cd4a939d97';
+  const PREPROD_CONTRACT = state.contractAddress || process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || process.env.VITE_CONTRACT_ADDRESS || 'c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc';
   const DEPLOYER_ADDR = 'mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv';
   const EXPLORER_BASE = 'https://preprod.midnightexplorer.com';
 

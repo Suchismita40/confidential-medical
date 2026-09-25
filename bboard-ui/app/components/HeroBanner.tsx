@@ -28,7 +28,7 @@ export function HeroBanner({ onExploreDatasets, onExplorePrivacy, boardState }: 
           </h1>
 
           <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-            Enable accredited healthcare institutions and researchers to prove data access eligibility and record verification via Zero-Knowledge proofs ? without disclosing patient PII, medical credentials, or private decryption keys on-chain.
+            Enable accredited healthcare institutions and researchers to prove data access eligibility and record verification via Zero-Knowledge proofs — without disclosing patient PII, medical credentials, or private decryption keys on-chain.
           </p>
 
           <div className="flex flex-wrap items-center gap-3.5 pt-2">

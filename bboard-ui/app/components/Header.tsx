@@ -51,7 +51,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
   const isAddressError = state.status === 'ADDRESS_ERROR';
   const isWrongNetwork = state.status === 'WRONG_NETWORK';
 
-  const PREPROD_CONTRACT = 'e603362546ca047cb7c596389c20fde9bdf1b27489f14137d68fd9cd4a939d97';
+  const PREPROD_CONTRACT = state.contractAddress || process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || process.env.VITE_CONTRACT_ADDRESS || 'c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc';
 
   const handleCopyContract = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();

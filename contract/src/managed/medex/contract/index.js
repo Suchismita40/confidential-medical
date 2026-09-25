@@ -111,7 +111,7 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 1 (as invoked from Typescript)',
-                                     'bboard.compact line 53 char 1',
+                                     'medex.compact line 53 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
@@ -141,14 +141,14 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('requestAccess',
                                      'argument 1 (as invoked from Typescript)',
-                                     'bboard.compact line 62 char 1',
+                                     'medex.compact line 62 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetId_0.buffer instanceof ArrayBuffer && datasetId_0.BYTES_PER_ELEMENT === 1 && datasetId_0.length === 32)) {
           __compactRuntime.typeError('requestAccess',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'bboard.compact line 62 char 1',
+                                     'medex.compact line 62 char 1',
                                      'Bytes<32>',
                                      datasetId_0)
         }
@@ -178,21 +178,21 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('grantPermission',
                                      'argument 1 (as invoked from Typescript)',
-                                     'bboard.compact line 70 char 1',
+                                     'medex.compact line 70 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetId_0.buffer instanceof ArrayBuffer && datasetId_0.BYTES_PER_ELEMENT === 1 && datasetId_0.length === 32)) {
           __compactRuntime.typeError('grantPermission',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'bboard.compact line 70 char 1',
+                                     'medex.compact line 70 char 1',
                                      'Bytes<32>',
                                      datasetId_0)
         }
         if (!(researcherPk_0.buffer instanceof ArrayBuffer && researcherPk_0.BYTES_PER_ELEMENT === 1 && researcherPk_0.length === 32)) {
           __compactRuntime.typeError('grantPermission',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'bboard.compact line 70 char 1',
+                                     'medex.compact line 70 char 1',
                                      'Bytes<32>',
                                      researcherPk_0)
         }
@@ -223,21 +223,21 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('submitAccessProof',
                                      'argument 1 (as invoked from Typescript)',
-                                     'bboard.compact line 77 char 1',
+                                     'medex.compact line 77 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetId_0.buffer instanceof ArrayBuffer && datasetId_0.BYTES_PER_ELEMENT === 1 && datasetId_0.length === 32)) {
           __compactRuntime.typeError('submitAccessProof',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'bboard.compact line 77 char 1',
+                                     'medex.compact line 77 char 1',
                                      'Bytes<32>',
                                      datasetId_0)
         }
         if (!(patientRecordHash_0.buffer instanceof ArrayBuffer && patientRecordHash_0.BYTES_PER_ELEMENT === 1 && patientRecordHash_0.length === 32)) {
           __compactRuntime.typeError('submitAccessProof',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'bboard.compact line 77 char 1',
+                                     'medex.compact line 77 char 1',
                                      'Bytes<32>',
                                      patientRecordHash_0)
         }
@@ -268,21 +268,21 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('renewAccessQuota',
                                      'argument 1 (as invoked from Typescript)',
-                                     'bboard.compact line 90 char 1',
+                                     'medex.compact line 90 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetId_0.buffer instanceof ArrayBuffer && datasetId_0.BYTES_PER_ELEMENT === 1 && datasetId_0.length === 32)) {
           __compactRuntime.typeError('renewAccessQuota',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'bboard.compact line 90 char 1',
+                                     'medex.compact line 90 char 1',
                                      'Bytes<32>',
                                      datasetId_0)
         }
         if (!(typeof(additionalQuota_0) === 'bigint' && additionalQuota_0 >= 0n && additionalQuota_0 <= 4294967295n)) {
           __compactRuntime.typeError('renewAccessQuota',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'bboard.compact line 90 char 1',
+                                     'medex.compact line 90 char 1',
                                      'Uint<0..4294967296>',
                                      additionalQuota_0)
         }
@@ -312,14 +312,14 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('revokeAccess',
                                      'argument 1 (as invoked from Typescript)',
-                                     'bboard.compact line 96 char 1',
+                                     'medex.compact line 96 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetId_0.buffer instanceof ArrayBuffer && datasetId_0.BYTES_PER_ELEMENT === 1 && datasetId_0.length === 32)) {
           __compactRuntime.typeError('revokeAccess',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'bboard.compact line 96 char 1',
+                                     'medex.compact line 96 char 1',
                                      'Bytes<32>',
                                      datasetId_0)
         }
@@ -656,7 +656,7 @@ export class Contract {
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('localSecretKey',
                                  'return value',
-                                 'bboard.compact line 45 char 1',
+                                 'medex.compact line 45 char 1',
                                  'Bytes<32>',
                                  result_0)
     }
@@ -673,7 +673,7 @@ export class Contract {
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('medicalCredentialSecret',
                                  'return value',
-                                 'bboard.compact line 46 char 1',
+                                 'medex.compact line 46 char 1',
                                  'Bytes<32>',
                                  result_0)
     }
@@ -690,7 +690,7 @@ export class Contract {
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('patientRecordKey',
                                  'return value',
-                                 'bboard.compact line 47 char 1',
+                                 'medex.compact line 47 char 1',
                                  'Bytes<32>',
                                  result_0)
     }
@@ -746,7 +746,7 @@ export class Contract {
                                                                                                                                                                alignment: _descriptor_12.alignment() } }] } },
                                                                                                                                     { popeq: { cached: true,
                                                                                                                                                result: undefined } }]).value),
-                                                                         'bboard.compact line 55 char 48'));
+                                                                         'medex.compact line 55 char 48'));
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
@@ -910,7 +910,7 @@ export class Contract {
                                                                                                                                                                                        alignment: _descriptor_12.alignment() } }] } },
                                                                                                                                                             { popeq: { cached: true,
                                                                                                                                                                        result: undefined } }]).value),
-                                                                                                 'bboard.compact line 72 char 47'))),
+                                                                                                 'medex.compact line 72 char 47'))),
                             'Only hospital dataset owner can grant permission');
     __compactRuntime.assert(this._equal_2(_descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                                     partialProofData,
@@ -1108,11 +1108,11 @@ export class Contract {
                                                                                                                                                                                        alignment: _descriptor_12.alignment() } }] } },
                                                                                                                                                             { popeq: { cached: true,
                                                                                                                                                                        result: undefined } }]).value),
-                                                                                                 'bboard.compact line 92 char 47'))),
+                                                                                                 'medex.compact line 92 char 47'))),
                             'Only hospital dataset owner can renew quota');
     const tmp_0 = ((t1) => {
                     if (t1 > 65535n) {
-                      throw new __compactRuntime.CompactError('bboard.compact line 93 char 37: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 65535');
+                      throw new __compactRuntime.CompactError('medex.compact line 93 char 37: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 65535');
                     }
                     return t1;
                   })(additionalQuota_0);
@@ -1191,7 +1191,7 @@ export class Contract {
                                                                                                                                                                                        alignment: _descriptor_12.alignment() } }] } },
                                                                                                                                                             { popeq: { cached: true,
                                                                                                                                                                        result: undefined } }]).value),
-                                                                                                 'bboard.compact line 98 char 47'))),
+                                                                                                 'medex.compact line 98 char 47'))),
                             'Only hospital admin can revoke access');
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
@@ -1443,14 +1443,14 @@ export const pureCircuits = {
     if (!(sk_0.buffer instanceof ArrayBuffer && sk_0.BYTES_PER_ELEMENT === 1 && sk_0.length === 32)) {
       __compactRuntime.typeError('publicKey',
                                  'argument 1',
-                                 'bboard.compact line 103 char 1',
+                                 'medex.compact line 103 char 1',
                                  'Bytes<32>',
                                  sk_0)
     }
     if (!(sequence_0.buffer instanceof ArrayBuffer && sequence_0.BYTES_PER_ELEMENT === 1 && sequence_0.length === 32)) {
       __compactRuntime.typeError('publicKey',
                                  'argument 2',
-                                 'bboard.compact line 103 char 1',
+                                 'medex.compact line 103 char 1',
                                  'Bytes<32>',
                                  sequence_0)
     }

@@ -15,7 +15,7 @@ import { Badge } from './components/ui';
 export default function MainDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
 
-  const PREPROD_CONTRACT = 'e603362546ca047cb7c596389c20fde9bdf1b27489f14137d68fd9cd4a939d97';
+  const PREPROD_CONTRACT = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || process.env.VITE_CONTRACT_ADDRESS || 'c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc';
 
   return (
     <div className="min-h-screen flex flex-col bg-midnight-950 text-slate-100 selection:bg-teal-500 selection:text-midnight-950">

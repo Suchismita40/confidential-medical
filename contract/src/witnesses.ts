@@ -1,42 +1,46 @@
-// Private Medical Research Data Exchange Witness Provider
+// Private Medical Research Data Exchange (MedEx) Witness Provider
 // Copyright (C) Midnight Foundation
 
-import { Ledger } from "./managed/bboard/contract/index.js";
+import { Ledger } from "./managed/medex/contract/index.js";
 import { WitnessContext } from "@midnight-ntwrk/midnight-js-protocol/compact-runtime";
 
-export type BBoardPrivateState = {
+export type MedExPrivateState = {
   readonly secretKey: Uint8Array;
   readonly medicalCredentialSecret: Uint8Array;
   readonly patientRecordKey: Uint8Array;
 };
 
-export const createBBoardPrivateState = (
+export type BBoardPrivateState = MedExPrivateState;
+
+export const createMedExPrivateState = (
   secretKey: Uint8Array,
   medicalCredentialSecret?: Uint8Array,
   patientRecordKey?: Uint8Array,
-): BBoardPrivateState => ({
+): MedExPrivateState => ({
   secretKey,
   medicalCredentialSecret: medicalCredentialSecret ?? secretKey,
   patientRecordKey: patientRecordKey ?? secretKey,
 });
 
+export const createBBoardPrivateState = createMedExPrivateState;
+
 export const witnesses = {
   localSecretKey: ({
     privateState,
-  }: WitnessContext<Ledger, BBoardPrivateState>): [
-    BBoardPrivateState,
+  }: WitnessContext<Ledger, MedExPrivateState>): [
+    MedExPrivateState,
     Uint8Array,
   ] => [privateState, privateState.secretKey],
   medicalCredentialSecret: ({
     privateState,
-  }: WitnessContext<Ledger, BBoardPrivateState>): [
-    BBoardPrivateState,
+  }: WitnessContext<Ledger, MedExPrivateState>): [
+    MedExPrivateState,
     Uint8Array,
   ] => [privateState, privateState.medicalCredentialSecret],
   patientRecordKey: ({
     privateState,
-  }: WitnessContext<Ledger, BBoardPrivateState>): [
-    BBoardPrivateState,
+  }: WitnessContext<Ledger, MedExPrivateState>): [
+    MedExPrivateState,
     Uint8Array,
   ] => [privateState, privateState.patientRecordKey],
 };

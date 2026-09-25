@@ -34,7 +34,7 @@ export function DocumentationView() {
         <div className="p-4 rounded-xl bg-midnight-950 border border-slateSurface-border space-y-3">
           <h3 className="font-bold text-sm text-teal-300 flex items-center gap-2">
             <Code className="w-4 h-4 text-teal-400" />
-            <span>2. Compact Circuit Specifications (bboard.compact)</span>
+            <span>2. Compact Circuit Specifications (medex.compact)</span>
           </h3>
           <ul className="space-y-2 text-slate-300">
             <li className="p-2 rounded-lg bg-midnight-900 border border-slateSurface-border">

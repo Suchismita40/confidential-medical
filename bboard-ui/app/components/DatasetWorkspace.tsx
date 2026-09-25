@@ -472,7 +472,7 @@ export function DatasetWorkspace() {
           isOpen={!!detailDataset}
           onClose={() => setDetailDataset(null)}
           title={detailDataset.title}
-          subtitle={`Clinical Cohort ? ${detailDataset.category}`}
+          subtitle={`Clinical Cohort — ${detailDataset.category}`}
           icon={<Database className="w-5 h-5 text-teal-400" />}
           maxWidth="2xl"
           footer={

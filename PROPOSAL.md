@@ -26,7 +26,7 @@ Midnight's dual-state architecture (private witness state + public ledger state)
 - **Proof Server**: Generates zero-knowledge SNARK proofs locally or via trusted proof servers before submitting balanced transactions to the Substrate ledger.
 
 ## 4. Smart Contract Architecture (Compact Circuits)
-The contract defines 6 zero-knowledge circuits in `contract/src/bboard.compact`:
+The contract defines 6 zero-knowledge circuits in `contract/src/medex.compact`:
 1. `registerDataset(title: Opaque<"string">, category: Opaque<"string">)`: Initializes a dataset with category and default access quota.
 2. `requestAccess(datasetId: Bytes[32])`: Submits researcher proof of authorization.
 3. `grantPermission(datasetId: Bytes[32], researcherPk: Bytes[32])`: Dataset owner grants permission.
@@ -36,10 +36,11 @@ The contract defines 6 zero-knowledge circuits in `contract/src/bboard.compact`:
 
 ## 5. Official Midnight Preprod Deployment
 - **Network**: Official Midnight Preprod (`preprod`)
-- **Contract Address**: `e603362546ca047cb7c596389c20fde9bdf1b27489f14137d68fd9cd4a939d97`
-- **Deployment Transaction Hash**: `636ea733d93f66febf110812f06573cc7c5d8f19569b0d2cc88420fdeabaf169`
+- **Contract Address**: `c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc`
+- **Deployment Transaction Hash**: `029aca25da2c63f4a7b80989088c7a18661344e6fcead0e01538eee1006474d9`
+- **Deployment Block Height**: `2707342`
 - **Deployer Public Address**: `mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv`
-- **Explorer**: [Midnight Preprod Explorer](https://explorer.preprod.midnight.network/)
+- **Explorer**: [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/contract/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc)
 
 ## 6. Frontend & User Experience
 - **Framework**: Next.js App Router (14.2+) with TypeScript.
@@ -47,6 +48,6 @@ The contract defines 6 zero-knowledge circuits in `contract/src/bboard.compact`:
 - **Wallet**: Authentic Midnight Lace Wallet integration (`window.midnight.mnLace`).
 
 ## 7. Verification & Testing
-- **Test Suite**: 8/8 comprehensive Vitest unit tests covering all circuits, quotas, and permissions.
+- **Test Suite**: 14/14 comprehensive Vitest unit tests (wallet-lifecycle + medex) covering all circuits, quotas, and permissions.
 - **Next.js Production Build**: Static export (`output: 'export'`) verified with 0 errors.
 - **CI/CD**: GitHub Actions pipeline for automated compilation, linting, testing, and secret leak scanning.

@@ -1,18 +1,18 @@
-// Private Medical Research Data Exchange Smart Contract Unit Tests
+// Private Medical Research Data Exchange (MedEx) Smart Contract Unit Tests
 // Copyright (C) Midnight Foundation
 
-import { BBoardSimulator } from "./bboard-simulator.js";
+import { MedExSimulator } from "./medex-simulator.js";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, it, expect } from "vitest";
 import { randomBytes } from "./utils.js";
-import { State } from "../managed/bboard/contract/index.js";
+import { State } from "../managed/medex/contract/index.js";
 
 setNetworkId("undeployed");
 
-describe("Private Medical Research Data Exchange Contract", () => {
+describe("Private Medical Research Data Exchange (MedEx) Contract", () => {
   it("properly initializes ledger state and private witness state", () => {
     const secretKey = randomBytes(32);
-    const simulator = new BBoardSimulator(secretKey);
+    const simulator = new MedExSimulator(secretKey);
     const ledgerState = simulator.getLedger();
 
     expect(ledgerState.sequence).toEqual(1n);
@@ -27,7 +27,7 @@ describe("Private Medical Research Data Exchange Contract", () => {
 
   it("allows a hospital to register a new medical research dataset with category metadata", () => {
     const hospitalKey = randomBytes(32);
-    const simulator = new BBoardSimulator(hospitalKey);
+    const simulator = new MedExSimulator(hospitalKey);
     const datasetTitle = "Genomic Oncology Study 2026 - Anonymized Cohort A";
     const datasetCategory = "Oncology & Genomics";
 
@@ -47,7 +47,7 @@ describe("Private Medical Research Data Exchange Contract", () => {
     const medicalCredential = randomBytes(32);
     const datasetId = randomBytes(32);
 
-    const simulator = new BBoardSimulator(hospitalKey);
+    const simulator = new MedExSimulator(hospitalKey);
     simulator.registerDataset(
       "Cardiology Patient Outcomes Dataset",
       "Cardiology",
@@ -69,7 +69,7 @@ describe("Private Medical Research Data Exchange Contract", () => {
     const datasetId = randomBytes(32);
     const patientRecordHash = randomBytes(32);
 
-    const simulator = new BBoardSimulator(hospitalKey);
+    const simulator = new MedExSimulator(hospitalKey);
     simulator.registerDataset(
       "Rare Neurological Disorders Cohort",
       "Neurology",
@@ -100,7 +100,7 @@ describe("Private Medical Research Data Exchange Contract", () => {
     const researcherKey = randomBytes(32);
     const datasetId = randomBytes(32);
 
-    const simulator = new BBoardSimulator(hospitalKey);
+    const simulator = new MedExSimulator(hospitalKey);
     simulator.registerDataset(
       "Immunology Clinical Trial Dataset",
       "Immunology",
@@ -122,7 +122,7 @@ describe("Private Medical Research Data Exchange Contract", () => {
     const patientRecordKey = randomBytes(32);
     const datasetId = randomBytes(32);
 
-    const simulator = new BBoardSimulator(hospitalKey);
+    const simulator = new MedExSimulator(hospitalKey);
     simulator.registerDataset("Pediatric Rare Disease Cohort", "Pediatrics");
 
     simulator.switchUser(researcherKey, medicalCredential, patientRecordKey);
@@ -155,7 +155,7 @@ describe("Private Medical Research Data Exchange Contract", () => {
     const patientRecordKey = randomBytes(32);
     const datasetId = randomBytes(32);
 
-    const simulator = new BBoardSimulator(hospitalKey);
+    const simulator = new MedExSimulator(hospitalKey);
     simulator.registerDataset(
       "Longitudinal Diabetic Retinopathy Cohort",
       "Ophthalmology",
@@ -182,7 +182,7 @@ describe("Private Medical Research Data Exchange Contract", () => {
 
   it("preserves deterministic public key derivation and ledger sequence monotonicity across state transitions", () => {
     const hospitalKey = randomBytes(32);
-    const simulator = new BBoardSimulator(hospitalKey);
+    const simulator = new MedExSimulator(hospitalKey);
 
     const initialPk = simulator.publicKey();
     expect(initialPk).toHaveLength(32);

@@ -3,7 +3,7 @@ import './globals.css';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'MedEx ? Private Medical Research Data Exchange | Midnight Preprod',
+  title: 'MedEx — Private Medical Research Data Exchange | Midnight Preprod',
   description: 'Confidential clinical dataset sharing, zero-knowledge researcher verification, and rate-limited access quotas built on Midnight blockchain.',
   keywords: [
     'Midnight Network',

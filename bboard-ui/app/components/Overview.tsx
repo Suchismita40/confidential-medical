@@ -61,7 +61,7 @@ export function Overview({ setActiveTab }: OverviewProps) {
 
             <p className="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
               Empowering healthcare institutions, academic hospitals, and research labs to discover clinical cohorts,
-              verify investigator credentials, and execute zero-knowledge study queries?without disclosing sensitive patient
+              verify investigator credentials, and execute zero-knowledge study queries — without disclosing sensitive patient
               PII, private keys, or raw medical data on-chain.
             </p>
           </div>

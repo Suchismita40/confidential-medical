@@ -1,29 +1,49 @@
-// Private Medical Research Data Exchange Common Types
+// Private Medical Research Data Exchange (MedEx) Common Types
 
-import { type MidnightProviders } from '@midnight-ntwrk/midnight-js-types';
-import { type FoundContract } from '@midnight-ntwrk/midnight-js-contracts';
-import type { State, BBoardPrivateState, Contract, Witnesses } from '@midnight-ntwrk/bboard-contract';
+import { type MidnightProviders } from "@midnight-ntwrk/midnight-js-types";
+import { type FoundContract } from "@midnight-ntwrk/midnight-js-contracts";
+import type {
+  State,
+  MedExPrivateState,
+  Contract,
+  Witnesses,
+} from "@midnight-ntwrk/bboard-contract";
 
 export type ContractAddress = string;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Logger = any;
 
-export const bboardPrivateStateKey = 'bboardPrivateState';
-export type PrivateStateId = typeof bboardPrivateStateKey;
+export const medexPrivateStateKey = "medexPrivateState";
+export const bboardPrivateStateKey = medexPrivateStateKey;
+export type PrivateStateId = typeof medexPrivateStateKey;
 
 export type PrivateStates = {
-  readonly bboardPrivateState: BBoardPrivateState;
+  readonly medexPrivateState: MedExPrivateState;
 };
 
-export type BBoardContract = Contract<BBoardPrivateState, Witnesses<BBoardPrivateState>>;
+export type MedExContract = Contract<
+  MedExPrivateState,
+  Witnesses<MedExPrivateState>
+>;
+export type BBoardContract = MedExContract;
 
-export type BBoardCircuitKeys = Exclude<keyof BBoardContract['impureCircuits'], number | symbol>;
+export type MedExCircuitKeys = Exclude<
+  keyof MedExContract["impureCircuits"],
+  number | symbol
+>;
+export type BBoardCircuitKeys = MedExCircuitKeys;
 
-export type BBoardProviders = MidnightProviders<BBoardCircuitKeys, PrivateStateId, BBoardPrivateState>;
+export type MedExProviders = MidnightProviders<
+  MedExCircuitKeys,
+  PrivateStateId,
+  MedExPrivateState
+>;
+export type BBoardProviders = MedExProviders;
 
-export type DeployedBBoardContract = FoundContract<BBoardContract>;
+export type DeployedMedExContract = FoundContract<MedExContract>;
+export type DeployedBBoardContract = DeployedMedExContract;
 
-export type BBoardDerivedState = {
+export type MedExDerivedState = {
   readonly state: State;
   readonly sequence: bigint;
   readonly datasetTitle: string | undefined;
@@ -36,3 +56,4 @@ export type BBoardDerivedState = {
   readonly accessCount: bigint;
   readonly isOwner: boolean;
 };
+export type BBoardDerivedState = MedExDerivedState;
