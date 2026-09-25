@@ -46,7 +46,7 @@ The deployment was independently verified via both the **Midnight Preprod Indexe
 1. **Contract Existence & Action Record:**
    - **Contract Address:** `c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc`
    - **State:** Verified deployed and active on-chain.
-   - **Explorer Link:** [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/contract/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc)
+   - **Explorer Link:** [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc)
 
 2. **Deployment Transaction Record:**
    - **Transaction Hash:** `029aca25da2c63f4a7b80989088c7a18661344e6fcead0e01538eee1006474d9`

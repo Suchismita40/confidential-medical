@@ -33,7 +33,7 @@ Experience the end-to-end interactive workflow of MedEx, demonstrating clinical 
 | 🎥 **Walkthrough Video** | End-to-end video demonstration of MedEx features | [YouTube Walkthrough](https://youtu.be/kTp4SCK7wlk) |
 | 📦 **GitHub Repository** | Verified open-source monorepo codebase | [Suchismita40/confidential-medical](https://github.com/Suchismita40/confidential-medical.git) |
 | ⚙️ **CI/CD Pipeline** | GitHub Actions build, test, and security workflows | [GitHub Actions CI](https://github.com/Suchismita40/confidential-medical/actions) |
-| 🔍 **NightScan Explorer** | Midnight Preprod Network Explorer | [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/contract/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc) |
+| 🔍 **NightScan Explorer** | Midnight Preprod Network Explorer | [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc) |
 | 📄 **Product Proposal** | Formal architecture specification and product proposal | [PROPOSAL.md](PROPOSAL.md) |
 | 🛡️ **Support & Guidelines** | Security and maintainer support documentation | [SUPPORT.md](SUPPORT.md) |
 
@@ -145,7 +145,7 @@ The MedEx smart contract is compiled with Compact v0.23 and deployed to the offi
 | **Deployer Unshielded Address** | `mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv` |
 | **Network Indexer URL** | `https://indexer.preprod.midnight.network/api/v4/graphql` |
 | **Preprod Node URL** | `https://rpc.preprod.midnight.network` |
-| **Network Explorer** | [Midnight Preprod Network Explorer](https://preprod.midnightexplorer.com/contract/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc) |
+| **Network Explorer** | [Midnight Preprod Network Explorer](https://preprod.midnightexplorer.com/contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc) |
 
 ---
 

@@ -257,7 +257,7 @@ export function ActivityView() {
                           {log.txHash.slice(0, 10)}...{log.txHash.slice(-6)}
                         </span>
                         <a
-                          href={EXPLORER_BASE}
+                          href={log.txHash ? `${EXPLORER_BASE}/transactions/${log.txHash.startsWith("0x") ? log.txHash : "0x" + log.txHash}` : EXPLORER_BASE}
                           target="_blank"
                           rel="noopener noreferrer"
                           title="View on Midnight Explorer"

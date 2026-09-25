@@ -62,7 +62,7 @@ export default function MainDashboard() {
               </a>
 
               <a
-                href={`https://preprod.midnightexplorer.com/contract/${PREPROD_CONTRACT}`}
+                href={`https://preprod.midnightexplorer.com/contracts/${PREPROD_CONTRACT}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-teal-300 inline-flex items-center gap-1.5 font-medium transition-colors"

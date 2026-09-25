@@ -307,7 +307,7 @@ async function main() {
   console.log(`  Deployment Tx Hash:   ${txHash}`);
   console.log(`  Deployment Block:     ${blockHeight}`);
   console.log(`  Deployer Address:     ${deployerAddress}`);
-  console.log(`  Explorer URL:         https://preprod.midnightexplorer.com/contract/${contractAddress}\n`);
+  console.log(`  Explorer URL:         https://preprod.midnightexplorer.com/contracts/${contractAddress}\n`);
 
   console.log('5. Double Live Preprod Indexer Verification...');
   let verifiedOnIndexer = false;
@@ -337,7 +337,7 @@ async function main() {
     deploymentTxHash: txHash,
     deploymentBlockHeight: blockHeight,
     deployerAddress: deployerAddress,
-    explorerUrl: `https://preprod.midnightexplorer.com/contract/${contractAddress}`,
+    explorerUrl: `https://preprod.midnightexplorer.com/contracts/${contractAddress}`,
     timestamp: new Date().toISOString(),
   };
 

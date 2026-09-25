@@ -592,7 +592,7 @@ export function DatasetWorkspace() {
               <div className="flex items-center justify-between">
                 <span className="text-slate-500 font-sans text-[11px] font-medium">Transaction Hash:</span>
                 <a
-                  href={`https://preprod.midnightexplorer.com/tx/${tx.txHash}`}
+                  href={`https://preprod.midnightexplorer.com/transactions/${tx.txHash.startsWith("0x") ? tx.txHash : "0x" + tx.txHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-teal-400 hover:underline flex items-center gap-1 font-sans text-[11px]"
