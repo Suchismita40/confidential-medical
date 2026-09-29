@@ -73,7 +73,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Compact Contract Verification & Compilation
-        working-directory: contract
+        working-directory: medex-contract
         run: |
           echo "Compiling Compact smart contract circuits..."
           npm run compact
@@ -84,56 +84,56 @@ jobs:
           echo "Compact contract compilation verified successfully."
 
       - name: Contract TypeScript Verification
-        working-directory: contract
+        working-directory: medex-contract
         run: npm run typecheck
 
       - name: Contract Linting Verification
-        working-directory: contract
+        working-directory: medex-contract
         run: npm run lint
 
       - name: Contract Automated Test Verification
-        working-directory: contract
+        working-directory: medex-contract
         run: npm run test -- --run
 
       - name: Build Contract Package
-        working-directory: contract
+        working-directory: medex-contract
         run: npm run build
 
       - name: API TypeScript & Linting Verification
-        working-directory: api
+        working-directory: medex-api
         run: |
           npm run typecheck
           npm run lint
 
       - name: Build API Package
-        working-directory: api
+        working-directory: medex-api
         run: npm run build
 
       - name: CLI TypeScript & Linting Verification
-        working-directory: bboard-cli
+        working-directory: medex-cli
         run: |
           npm run typecheck
           npm run lint
 
       - name: Build CLI Package
-        working-directory: bboard-cli
+        working-directory: medex-cli
         run: npm run build
 
       - name: Frontend UI TypeScript & Linting Verification
-        working-directory: bboard-ui
+        working-directory: medex-ui
         run: |
           npm run typecheck
           npm run lint
 
       - name: Build Frontend UI Package
-        working-directory: bboard-ui
+        working-directory: medex-ui
         run: npm run build
 
       - name: Upload Frontend UI Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-ui-out
-          path: bboard-ui/out/
+          path: medex-ui/.next/
           retention-days: 7
 
       - name: Upload Compact Contract Artifacts

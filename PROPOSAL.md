@@ -10,12 +10,12 @@ Medical research institutions, pharmaceutical developers, and academic hospitals
 - **Unauthorized Bulk Scraping**: Traditional permission models fail to enforce cryptographic access quotas per research session.
 
 ## 2. The Solution: Private Medical Research Data Exchange
-A decentralized, privacy-first clinical dataset exchange built on the **Midnight Network** using the **Compact** smart contract language.
+A decentralized, privacy-first clinical dataset exchange built on the **Midnight Network** using the **Compact** smart medex-contract language.
 
 Key Capabilities:
 - **Zero-Knowledge Dataset Registration**: Hospitals publish anonymized clinical cohorts with on-chain metadata categorization (*Oncology*, *Cardiology*, *Genomics*, *Neurology*).
 - **Private Witness Authentication**: Researchers prove possession of medical credentials and authorized identity keys without disclosing them on the public ledger.
-- **Rate-Limited Access Quotas**: Smart contracts strictly enforce access quotas (`maxAccessLimit` / `accessCount`) per dataset to prevent bulk scraping.
+- **Rate-Limited Access Quotas**: Smart medex-contracts strictly enforce access quotas (`maxAccessLimit` / `accessCount`) per dataset to prevent bulk scraping.
 - **Cryptographic Quota Renewal**: Authorized dataset owners can extend researcher quotas dynamically.
 - **Selective Disclosure Engine**: Interactive transparency toggle demonstrating the exact boundary between public ledger state and private ZK witnesses.
 
@@ -26,7 +26,7 @@ Midnight's dual-state architecture (private witness state + public ledger state)
 - **Proof Server**: Generates zero-knowledge SNARK proofs locally or via trusted proof servers before submitting balanced transactions to the Substrate ledger.
 
 ## 4. Smart Contract Architecture (Compact Circuits)
-The contract defines 6 zero-knowledge circuits in `contract/src/medex.compact`:
+The medex-contract defines 6 zero-knowledge circuits in `medex-contract/src/medex.compact`:
 1. `registerDataset(title: Opaque<"string">, category: Opaque<"string">)`: Initializes a dataset with category and default access quota.
 2. `requestAccess(datasetId: Bytes[32])`: Submits researcher proof of authorization.
 3. `grantPermission(datasetId: Bytes[32], researcherPk: Bytes[32])`: Dataset owner grants permission.
@@ -40,7 +40,7 @@ The contract defines 6 zero-knowledge circuits in `contract/src/medex.compact`:
 - **Deployment Transaction Hash**: `029aca25da2c63f4a7b80989088c7a18661344e6fcead0e01538eee1006474d9`
 - **Deployment Block Height**: `2707342`
 - **Deployer Public Address**: `mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv`
-- **Explorer**: [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc)
+- **Explorer**: [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/medex-contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc)
 
 ## 6. Frontend & User Experience
 - **Framework**: Next.js App Router (14.2+) with TypeScript.

@@ -11,7 +11,7 @@
 [![Lace Wallet](https://img.shields.io/badge/Lace_Wallet-Midnight_Preprod-4A154B?style=for-the-badge)](https://www.lace.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-**MedEx (Private Medical Research Data Exchange)** is a zero-knowledge clinical data governance platform engineered on the **Midnight Network**. MedEx resolves the tension between medical research collaboration and patient privacy regulations (such as HIPAA and GDPR) by leveraging Compact smart contracts, zero-knowledge proofs (ZK-SNARKs), and dual-state architecture. Healthcare institutions can safely register research cohorts, enforce cryptographic query quotas, and verify investigator credentials without ever exposing raw patient records, medical license secrets, or private decryption keys to public ledgers.
+**MedEx (Private Medical Research Data Exchange)** is a zero-knowledge clinical data governance platform engineered on the **Midnight Network**. MedEx resolves the tension between medical research collaboration and patient privacy regulations (such as HIPAA and GDPR) by leveraging Compact smart medex-contracts, zero-knowledge proofs (ZK-SNARKs), and dual-state architecture. Healthcare institutions can safely register research cohorts, enforce cryptographic query quotas, and verify investigator credentials without ever exposing raw patient records, medical license secrets, or private decryption keys to public ledgers.
 
 ---
 
@@ -29,11 +29,11 @@ Experience the end-to-end interactive workflow of MedEx, demonstrating clinical 
 
 | Resource | Description | Status / Link |
 | :--- | :--- | :--- |
-| 🌐 **Live Web Application** | Production-ready clinical workstation deployed on Vercel | [https://confidential-medical-bboard-ui.vercel.app/](https://confidential-medical-bboard-ui.vercel.app/) |
+| 🌐 **Live Web Application** | Production-ready clinical workstation deployed on Vercel | [https://confidential-medical-medex-ui.vercel.app/](https://confidential-medical-medex-ui.vercel.app/) |
 | 🎥 **Walkthrough Video** | End-to-end video demonstration of MedEx features | [YouTube Walkthrough](https://youtu.be/kTp4SCK7wlk) |
 | 📦 **GitHub Repository** | Verified open-source monorepo codebase | [Suchismita40/confidential-medical](https://github.com/Suchismita40/confidential-medical.git) |
 | ⚙️ **CI/CD Pipeline** | GitHub Actions build, test, and security workflows | [GitHub Actions CI](https://github.com/Suchismita40/confidential-medical/actions) |
-| 🔍 **NightScan Explorer** | Midnight Preprod Network Explorer | [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc) |
+| 🔍 **NightScan Explorer** | Midnight Preprod Network Explorer | [Midnight Preprod Explorer](https://preprod.midnightexplorer.com/medex-contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc) |
 | 📄 **Product Proposal** | Formal architecture specification and product proposal | [PROPOSAL.md](PROPOSAL.md) |
 | 🛡️ **Support & Guidelines** | Security and maintainer support documentation | [SUPPORT.md](SUPPORT.md) |
 
@@ -51,7 +51,7 @@ Experience the end-to-end interactive workflow of MedEx, demonstrating clinical 
 ### 2. 🔐 CONFIDENTIAL PRESCRIPTIONS
 ![CONFIDENTIAL PRESCRIPTIONS](docs/screenshots/confidential-prescriptions.png)
 
-*The Confidential Prescriptions and Research Permissions interface provides granular zero-knowledge access governance across active clinical cohort contracts. Hospital data stewards can enforce cryptographic query quotas, review pending investigator authorizations, and safely verify access proofs without ever disclosing sensitive patient identities, private prescriptions, or raw clinical records.*
+*The Confidential Prescriptions and Research Permissions interface provides granular zero-knowledge access governance across active clinical cohort medex-contracts. Hospital data stewards can enforce cryptographic query quotas, review pending investigator authorizations, and safely verify access proofs without ever disclosing sensitive patient identities, private prescriptions, or raw clinical records.*
 
 ---
 
@@ -69,14 +69,14 @@ Collaborative biomedical research and clinical machine learning models require a
 
 1. **Regulatory Non-Compliance (HIPAA & GDPR)**: Publishing Protected Health Information (PHI), diagnostic histories, or identifiable genomic metadata on transparent public ledgers violates privacy mandates and is permanently irreversible.
 2. **Medical Credential Exposure**: Investigators must prove institutional accreditation and active clinical licensing to query trial cohorts, yet public key architectures link real-world medical identities, institutional affiliations, and query logs indefinitely.
-3. **Bulk Scraping & Re-Identification Attacks**: Public smart contracts lack enforceable, cryptographic rate-limiting, leaving clinical datasets vulnerable to Sybil-driven data aggregation and correlation attacks.
+3. **Bulk Scraping & Re-Identification Attacks**: Public smart medex-contracts lack enforceable, cryptographic rate-limiting, leaving clinical datasets vulnerable to Sybil-driven data aggregation and correlation attacks.
 4. **Auditability vs. Confidentiality Trade-Off**: Institutional Review Boards (IRBs) require mathematical proof that data access adhered to approved protocols without disclosing the confidential clinical records or query payloads.
 
 ### The Midnight Zero-Knowledge Solution
-**MedEx** resolves these challenges by leveraging **Midnight Network's dual-state architecture** and the **Compact smart contract language**:
+**MedEx** resolves these challenges by leveraging **Midnight Network's dual-state architecture** and the **Compact smart medex-contract language**:
 
 - **Private Prover Witness Isolation**: Private patient record encryption keys, doctor licensing secrets, and private institutional keys execute exclusively inside the researcher's local prover environment.
-- **On-Chain Cryptographic Access Invariants**: Smart contracts enforce state machine transitions, investigator authorization commitments, access quotas (`accessCount < maxAccessLimit`), and sequence-based revocations without ledger visibility into private witnesses.
+- **On-Chain Cryptographic Access Invariants**: Smart medex-contracts enforce state machine transitions, investigator authorization commitments, access quotas (`accessCount < maxAccessLimit`), and sequence-based revocations without ledger visibility into private witnesses.
 - **Selective Disclosure Model**: Explicit `disclose()` primitives ensure only necessary public verification tokens (dataset domain, proof hashes, quota limits, and derived public keys) reach the Substrate ledger, providing complete mathematical auditability with zero data leakage.
 
 ---
@@ -84,47 +84,47 @@ Collaborative biomedical research and clinical machine learning models require a
 ## ✨ Features
 
 ### 1. 🧬 Confidential Dataset Registration & Discovery
-- **Implemented In**: `contract/src/medex.compact` (`registerDataset`), `bboard-ui/app/components/MainDashboard.tsx`
+- **Implemented In**: `medex-contract/src/medex.compact` (`registerDataset`), `medex-ui/app/components/MainDashboard.tsx`
 - **Functionality**: Healthcare providers register clinical research cohorts (e.g. *Oncology*, *Cardiology*, *Genomics*) with initial query limits while keeping the hospital's signing key confidential. Discloses only dataset domain metadata and one-way key commitments.
 
 ### 2. 🔐 Zero-Knowledge Access Request & Credential Verification
-- **Implemented In**: `contract/src/medex.compact` (`requestAccess`), `bboard-ui/app/components/MainDashboard.tsx`
+- **Implemented In**: `medex-contract/src/medex.compact` (`requestAccess`), `medex-ui/app/components/MainDashboard.tsx`
 - **Functionality**: Researchers prove possession of valid medical licensing credentials (`medicalCredentialSecret != ""` and valid secret key) in zero-knowledge. Derives an ephemeral `activeResearcherPk` commitment without broadcasting raw credentials.
 
 ### 3. 🛡️ Permission Granting & Role-Based Authorization
-- **Implemented In**: `contract/src/medex.compact` (`grantPermission`), `bboard-ui/app/components/MainDashboard.tsx`
+- **Implemented In**: `medex-contract/src/medex.compact` (`grantPermission`), `medex-ui/app/components/MainDashboard.tsx`
 - **Functionality**: Dataset owners verify and authorize pending research requests on-chain. Validates that the caller holds the private key matching the dataset's `owner` commitment before granting access.
 
 ### 4. 📊 Cryptographic Access Quota Enforcement & Rate-Limiting
-- **Implemented In**: `contract/src/medex.compact` (`submitAccessProof`), `bboard-ui/app/components/MainDashboard.tsx`
+- **Implemented In**: `medex-contract/src/medex.compact` (`submitAccessProof`), `medex-ui/app/components/MainDashboard.tsx`
 - **Functionality**: Limits researcher queries by enforcing `accessCount < maxAccessLimit` inside the ZK circuit. Generates a 32-byte Poseidon hash (`lastProofHash`) committing to the patient record query without disclosing the underlying `patientRecordKey`.
 
 ### 5. 🔄 Dynamic Quota Renewal
-- **Implemented In**: `contract/src/medex.compact` (`renewAccessQuota`), `bboard-ui/app/components/MainDashboard.tsx`
+- **Implemented In**: `medex-contract/src/medex.compact` (`renewAccessQuota`), `medex-ui/app/components/MainDashboard.tsx`
 - **Functionality**: Cohort owners can extend query limits (`maxAccessLimit.increment(disclose(additionalQuota))`) on-chain without restarting active studies or re-verifying credentials.
 
 ### 6. 🚫 Sequence-Based Instant Access Revocation
-- **Implemented In**: `contract/src/medex.compact` (`revokeAccess`), `bboard-ui/app/components/MainDashboard.tsx`
+- **Implemented In**: `medex-contract/src/medex.compact` (`revokeAccess`), `medex-ui/app/components/MainDashboard.tsx`
 - **Functionality**: Hospital administrators can revoke access permissions instantly. Increments a monotonic `sequence` counter on-chain, mathematically invalidating prior public key derivations and preventing replay attacks.
 
 ### 7. 📜 Immutable Audit Trail & Telemetry
-- **Implemented In**: `contract/src/medex.compact` (`auditLogCount`, `datasetCount`), `bboard-ui/app/components/MainDashboard.tsx`
+- **Implemented In**: `medex-contract/src/medex.compact` (`auditLogCount`, `datasetCount`), `medex-ui/app/components/MainDashboard.tsx`
 - **Functionality**: Real-time telemetry monitoring total registered cohorts, active permission states, cryptographic query proofs, and ledger audit logs.
 
 ### 8. 👛 Authentic Midnight Lace Integration & Stale-Session Protection
-- **Implemented In**: `bboard-ui/src/contexts/DeployedBoardContext.tsx`, `contract/src/test/wallet-lifecycle.test.ts`
+- **Implemented In**: `medex-ui/src/contexts/DeployedBoardContext.tsx`, `medex-contract/src/test/wallet-lifecycle.test.ts`
 - **Functionality**: Native integration with `@midnight-ntwrk/dapp-connector-api` v4. Resolves live unshielded addresses (`mn_addr_preprod1...`), detects extension RPC channel shutdowns (`isChannelShutdownError`), and performs seamless clean-session recovery.
 
 ---
 
 ## ✅ Challenge Requirements Checklist
 
-- [x] **Compact Smart Contract**: Production-ready Compact v0.23 smart contract implementing dual-state medical data exchange (`contract/src/medex.compact`).
+- [x] **Compact Smart Contract**: Production-ready Compact v0.23 smart medex-contract implementing dual-state medical data exchange (`medex-contract/src/medex.compact`).
 - [x] **Zero-Knowledge Privacy Separation**: Strict isolation between client-side private witness state and public on-chain ledger state.
 - [x] **Explicit `disclose()` Mechanisms**: Documented, verified use of `disclose()` for selective state disclosure in Compact circuits.
 - [x] **Midnight Lace Wallet Integration**: Complete connection lifecycle with live unshielded address retrieval, network validation, and channel shutdown recovery.
-- [x] **Frontend-Triggered Contract Circuits**: Interactive Next.js 14.2 web application executing contract circuits from the UI.
-- [x] **Verified Preprod Deployment**: Active on-chain contract deployed on Midnight Preprod network (`c4e4778c4b3d...473f77c9f88085cc`).
+- [x] **Frontend-Triggered Contract Circuits**: Interactive Next.js 14.2 web application executing medex-contract circuits from the UI.
+- [x] **Verified Preprod Deployment**: Active on-chain medex-contract deployed on Midnight Preprod network (`c4e4778c4b3d...473f77c9f88085cc`).
 - [x] **Automated Unit Tests**: 14/14 automated Vitest unit tests verifying state transitions, quota boundaries, sequence rotation, and wallet recovery.
 - [x] **CI/CD Automation**: GitHub Actions workflow (`.github/workflows/ci.yml`) automating Compact compilation, typechecks, Vitest tests, and Next.js production builds.
 - [x] **Comprehensive Documentation**: Architectural diagrams, verified circuit specifications, local setup guide, and formal product proposal (`PROPOSAL.md`).
@@ -133,7 +133,7 @@ Collaborative biomedical research and clinical machine learning models require a
 
 ## 📌 Contract Address
 
-The MedEx smart contract is compiled with Compact v0.23 and deployed to the official Midnight Preprod network:
+The MedEx smart medex-contract is compiled with Compact v0.23 and deployed to the official Midnight Preprod network:
 
 | Field | Verified Deployment Value |
 | :--- | :--- |
@@ -145,13 +145,13 @@ The MedEx smart contract is compiled with Compact v0.23 and deployed to the offi
 | **Deployer Unshielded Address** | `mn_addr_preprod1efmkmrfgcdxhxyx2f7kfmchgrfme6prmvmyx3y23aae2t9zmnuzsqnh8xv` |
 | **Network Indexer URL** | `https://indexer.preprod.midnight.network/api/v4/graphql` |
 | **Preprod Node URL** | `https://rpc.preprod.midnight.network` |
-| **Network Explorer** | [Midnight Preprod Network Explorer](https://preprod.midnightexplorer.com/contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc) |
+| **Network Explorer** | [Midnight Preprod Network Explorer](https://preprod.midnightexplorer.com/medex-contracts/c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc) |
 
 ---
 
 ## 🧩 Compact Smart Contract Circuits
 
-The smart contract logic is defined in `contract/src/medex.compact` (Compact v0.23). Each circuit enforces specific state transitions and cryptographic invariants:
+The smart medex-contract logic is defined in `medex-contract/src/medex.compact` (Compact v0.23). Each circuit enforces specific state transitions and cryptographic invariants:
 
 | Circuit | Type / Purity | Inputs | Private Witnesses | Ledger / State Effect | Purpose | Privacy & Security Property |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -186,7 +186,7 @@ In clinical healthcare, patient privacy and professional credential confidential
 In Compact, state mutations must explicitly wrap data with `disclose(...)` to declare what data becomes part of the public ledger state. In MedEx, `disclose()` is used strictly on cryptographic commitments and sanitized metadata:
 
 ```rust
-// Snippet from contract/src/medex.compact
+// Snippet from medex-contract/src/medex.compact
 export circuit registerDataset(title: Opaque<"string">, category: Opaque<"string">): [] {
   assert(state == State.NONE || state == State.REVOKED, "Dataset slot busy");
   owner = disclose(publicKey(localSecretKey(), sequence as Field as Bytes<32>));
@@ -298,7 +298,7 @@ The MedEx frontend integrates directly with the **Midnight Lace** wallet extensi
 ### Prerequisites
 - **Node.js**: `v20.x` or `v22.x` (LTS recommended; verify with `node -v`)
 - **npm**: `v10.x` or higher
-- **Compact Compiler**: `v0.23` or `v0.31` (for compiling `contract/src/medex.compact`)
+- **Compact Compiler**: `v0.23` or `v0.31` (for compiling `medex-contract/src/medex.compact`)
 - **Midnight Lace Wallet**: Chrome/Brave extension installed and set to **Midnight Preprod**
 - **Docker** *(Optional)*: For running a local Midnight proof server / local node
 
@@ -311,8 +311,8 @@ npm install --legacy-peer-deps
 
 ### 2. Compile Compact Smart Contract
 ```bash
-npm run compact -w contract
-npm run build -w contract
+npm run compact -w medex-contract
+npm run build -w medex-contract
 ```
 
 ### 3. Start Local Midnight Proof Server (Optional)
@@ -325,12 +325,12 @@ docker run -d -p 6300:6300 midnightnetwork/proof-server:latest
 ### 4. Build Workspace Packages
 ```bash
 npm run build -w api
-npm run copy:keys -w bboard-ui
+npm run copy:keys -w medex-ui
 ```
 
 ### 5. Launch Frontend Development Server
 ```bash
-npm run dev -w bboard-ui
+npm run dev -w medex-ui
 ```
 *Open [http://localhost:3000](http://localhost:3000) in your browser with Midnight Lace connected.*
 
@@ -338,7 +338,7 @@ npm run dev -w bboard-ui
 
 ## 🧪 Automated Testing
 
-MedEx includes an automated test suite executed via **Vitest** verifying all smart contract circuits, state invariants, cryptographic quotas, and wallet lifecycle handlers.
+MedEx includes an automated test suite executed via **Vitest** verifying all smart medex-contract circuits, state invariants, cryptographic quotas, and wallet lifecycle handlers.
 
 ```bash
 npm test
@@ -346,7 +346,7 @@ npm test
 
 ### Expected Output
 ```text
- RUN  v4.1.9 /home/user/midnight-projects/private-medical-research-data-exchange/contract
+ RUN  v4.1.9 /home/user/midnight-projects/private-medical-research-data-exchange/medex-contract
 
  ✓ src/test/wallet-lifecycle.test.ts (6 tests) 10ms
    ✓ detects remote API channel shutdown errors correctly
@@ -375,8 +375,8 @@ npm test
 
 | Test Suite File | Test Scope / Target | Tests | Status |
 | :--- | :--- | :---: | :---: |
-| [`medex.test.ts`](file:///contract/src/test/medex.test.ts) | Initial contract state, dataset registration, access request, permission grant, quota limit enforcement, quota renewal, access revocation, and sequence monotonicity. | 8 | ✅ Passing |
-| [`wallet-lifecycle.test.ts`](file:///contract/src/test/wallet-lifecycle.test.ts) | RPC channel shutdown error detection, unshielded address validation, rejection of shielded/dust addresses, dead session detection, and fresh session reconnection. | 6 | ✅ Passing |
+| [`medex.test.ts`](file:///medex-contract/src/test/medex.test.ts) | Initial medex-contract state, dataset registration, access request, permission grant, quota limit enforcement, quota renewal, access revocation, and sequence monotonicity. | 8 | ✅ Passing |
+| [`wallet-lifecycle.test.ts`](file:///medex-contract/src/test/wallet-lifecycle.test.ts) | RPC channel shutdown error detection, unshielded address validation, rejection of shielded/dust addresses, dead session detection, and fresh session reconnection. | 6 | ✅ Passing |
 | **Total Test Suite** | **Full Contract & Wallet Integration Test Coverage** | **14** | **✅ 14/14 Passing** |
 
 ---
@@ -385,7 +385,7 @@ npm test
 
 ### Architectural Components
 The MedEx architecture comprises four primary layers:
-1. **Client Clinical Workstation (`bboard-ui`)**: Next.js 14.2 application providing clinical telemetry, cohort discovery, dataset registration modals, and ZK privacy inspection.
+1. **Client Clinical Workstation (`medex-ui`)**: Next.js 14.2 application providing clinical telemetry, cohort discovery, dataset registration modals, and ZK privacy inspection.
 2. **Private Witness Prover**: Client-side zero-knowledge execution environment executing Compact circuit provers with local private witnesses (`localSecretKey`, `medicalCredentialSecret`, `patientRecordKey`).
 3. **Midnight Lace Wallet**: dApp connector layer managing user authorization, network verification (`preprod`), and transaction signing with unshielded address identity.
 4. **Midnight Preprod Ledger & Indexer**: Substrate-based privacy-preserving blockchain executing compiled Compact verification keys, maintaining on-chain state counters, and syncing via GraphQL indexer.
@@ -402,7 +402,7 @@ Researcher / Hospital Steward
               ▼
 ┌───────────────────────────────┐
 │      MedEx Web Application    │
-│          (bboard-ui)          │
+│          (medex-ui)          │
 └───────────────┬───────────────┘
                 │
                 ▼
@@ -485,11 +485,11 @@ private-medical-research-data-exchange/
 │   │   └── index.ts                  # Public API exports & circuit wrappers
 │   ├── package.json
 │   └── tsconfig.json
-├── bboard-cli/                       # CLI Tooling for Contract Interaction
+├── medex-cli/                       # CLI Tooling for Contract Interaction
 │   ├── src/
 │   │   └── index.ts                  # Command-line interface for ledger actions
 │   └── package.json
-├── bboard-ui/                        # Next.js 14.2 Clinical Web Application
+├── medex-ui/                        # Next.js 14.2 Clinical Web Application
 │   ├── app/                          # Next.js App Router Pages & Components
 │   │   ├── components/
 │   │   │   ├── Header.tsx            # Responsive navigation & Lace wallet pill
@@ -505,9 +505,9 @@ private-medical-research-data-exchange/
 │   ├── public/                       # ZKIR proving keys, icons, and static assets
 │   ├── tailwind.config.ts            # Custom Obsidian & Teal color themes
 │   └── package.json
-├── contract/                         # Compact Smart Contract & ZK Proofs
+├── medex-contract/                         # Compact Smart Contract & ZK Proofs
 │   ├── src/
-│   │   ├── medex.compact            # Compact v0.23 smart contract circuits
+│   │   ├── medex.compact            # Compact v0.23 smart medex-contract circuits
 │   │   ├── managed/medex/           # Generated circuit bindings, keys, and ZKIR
 │   │   └── test/
 │   │       ├── medex.test.ts        # Contract state transition & quota unit tests
@@ -550,9 +550,9 @@ The repository utilizes **GitHub Actions** (`.github/workflows/ci.yml`) to enfor
 │   ↓
 ├── 7. Typecheck & Lint Workspace      # Executes tsc --noEmit across all packages
 │   ↓
-├── 8. Run Vitest Test Suite (14)      # Executes 14/14 unit tests across contract & wallet
+├── 8. Run Vitest Test Suite (14)      # Executes 14/14 unit tests across medex-contract & wallet
 │   ↓
-├── 9. Build Next.js Production Bundle # Compiles optimized bboard-ui distribution
+├── 9. Build Next.js Production Bundle # Compiles optimized medex-ui distribution
 │   ↓
 └── 10. Upload Artifacts               # Packages build bundles & test coverage reports
 ```
@@ -560,7 +560,7 @@ The repository utilizes **GitHub Actions** (`.github/workflows/ci.yml`) to enfor
 ### Configured Pipeline Stages:
 1. **Repository & Secret Verification**: Scans codebase for accidentally committed credentials or secrets.
 2. **Compact Circuit Compilation**: Invokes the Compact compiler to generate zero-knowledge proving keys and TypeScript bindings.
-3. **Static Analysis & Typechecking**: Runs `tsc --noEmit` across all workspace packages (`api`, `contract`, `bboard-cli`, `bboard-ui`).
+3. **Static Analysis & Typechecking**: Runs `tsc --noEmit` across all workspace packages (`api`, `medex-contract`, `medex-cli`, `medex-ui`).
 4. **Automated Unit Testing**: Executes the full 14-test Vitest suite, verifying all circuit state machines and wallet lifecycle error handlers.
 5. **Frontend Production Build**: Compiles the Next.js App Router application into an optimized static/SSR distribution.
 
@@ -580,7 +580,7 @@ The repository utilizes **GitHub Actions** (`.github/workflows/ci.yml`) to enfor
 ## 🗺️ Roadmap
 
 ### ✅ Completed Milestones
-- [x] Compact v0.23 smart contract circuits with dual-state ZK access control.
+- [x] Compact v0.23 smart medex-contract circuits with dual-state ZK access control.
 - [x] Deployment and verification on official Midnight Preprod network.
 - [x] Integration with Midnight Lace Wallet and unshielded address resolution.
 - [x] RPC channel recovery and stale session lifecycle management.

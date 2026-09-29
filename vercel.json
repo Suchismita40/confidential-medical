@@ -1,7 +1,7 @@
 {
   "version": 2,
   "buildCommand": "npm run build:vercel",
-  "outputDirectory": "bboard-ui/out",
+  "outputDirectory": "medex-ui/out",
   "installCommand": "npm ci --legacy-peer-deps",
   "framework": null,
   "rewrites": [

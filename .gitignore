@@ -20,16 +20,16 @@ yarn-error.log*
 # Deployment Results & Local Databases
 preview-deployment-result.json
 preprod-deployment-result.json
-bboard-cli/preview-deployment-result.json
-bboard-cli/preprod-deployment-result.json
+medex-cli/preview-deployment-result.json
+medex-cli/preprod-deployment-result.json
 midnight-level-db/
-bboard-cli/midnight-level-db/
-bboard-private-state-*
+medex-cli/midnight-level-db/
+medex-private-state-*
 
 # Logs
 logs/
 *.log
-bboard-cli/logs/
+medex-cli/logs/
 
 # Testing & Coverage
 coverage/
@@ -86,4 +86,8 @@ Thumbs.db
 /link-all-circuits.js
 /compare_node_vs_local_dust.*
 /list_*_errors.*
-bboard-cli/src/test_inspect.ts
+medex-cli/src/test_inspect.ts
+.vercel
+.env*
+/update_ui.py
+/scripts/

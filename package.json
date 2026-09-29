@@ -1,5 +1,5 @@
 {
-  "name": "@midnight-ntwrk/example-bboard",
+  "name": "@midnight-ntwrk/medex-exchange",
   "version": "0.1.0",
   "author": "IOG",
   "license": "MIT",
@@ -10,10 +10,10 @@
   },
   "workspaces": {
     "packages": [
-      "bboard-cli",
-      "bboard-ui",
-      "api",
-      "contract"
+      "medex-cli",
+      "medex-ui",
+      "medex-api",
+      "medex-contract"
     ]
   },
   "dependencies": {
@@ -63,8 +63,8 @@
     "vite-plugin-wasm": "^3.6.0"
   },
   "scripts": {
-    "build": "npm run build -w contract && npm run build -w api && npm run build -w bboard-ui",
-    "build:vercel": "npm run build -w contract && npm run build -w api && npm run build:vercel -w bboard-ui",
-    "test": "npm --prefix contract run test"
+    "build": "npm run build -w medex-contract && npm run build -w medex-api && npm run build -w medex-ui",
+    "build:vercel": "npm run build -w medex-contract && npm run build -w medex-api && npm run build:vercel -w medex-ui",
+    "test": "npm --prefix medex-contract run test"
   }
 }

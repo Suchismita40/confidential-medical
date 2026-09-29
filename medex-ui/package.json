@@ -1,0 +1,51 @@
+{
+  "name": "@midnight-ntwrk/medex-ui",
+  "version": "0.1.0",
+  "author": "IOG",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "copy:keys": "mkdir -p ./public/keys ./public/zkir && cp -r ../medex-contract/src/managed/medex/keys/* ./public/keys/ && cp -r ../medex-contract/src/managed/medex/zkir/* ./public/zkir/",
+    "build": "npm run build:deps && npm run build:preview",
+    "build:preview": "npm run copy:keys && rm -rf ./dist && tsc && vite build --mode preview && cp -r ../medex-contract/src/managed/medex/keys ./dist/keys && cp -r ../medex-contract/src/managed/medex/zkir ./dist/zkir",
+    "build:vercel": "npm run build:deps && npm run build:preview && rm -rf ./out && cp -r ./dist ./out",
+    "build:start": "npm run build && npm run start",
+    "build:start:preview": "npm run build:preview && npm run start",
+    "ci": "npm run typecheck && npm run lint",
+    "dev": "npm run copy:keys && next dev",
+    "lint": "eslint app src",
+    "start": "next start",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "preview": "vite preview",
+    "prepack": "yarn build",
+    "build:deps": "npm --prefix ../medex-contract run build && npm --prefix ../medex-api run build"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^9.1.1",
+    "@mui/material": "^9.1.1",
+    "autoprefixer": "^10.5.4",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.31.0",
+    "next": "^14.2.15",
+    "node-stdlib-browser": "^1.3.1",
+    "postcss": "^8.5.26",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "7.17.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^3.4.14",
+    "@midnight-ntwrk/medex-contract": "*",
+    "@midnight-ntwrk/medex-api": "*"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.15.41",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "eslint-plugin-react": "^7.37.5",
+    "vite-plugin-node-polyfills": "^0.28.0"
+  }
+}

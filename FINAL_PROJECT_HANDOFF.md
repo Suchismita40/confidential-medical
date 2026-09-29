@@ -70,12 +70,12 @@ All files in the workspace have been categorized per project integrity standards
 - `contract/src/test/medex.test.ts` & `contract/src/test/medex-simulator.ts`: Unit test suite verifying circuit state transitions, access quotas, sequence monotonicity, and privacy rules.
 - `contract/src/test/wallet-lifecycle.test.ts`: Unit test suite verifying Lace wallet lifecycle, stale session handling, and RPC channel recovery.
 - `api/src/common-types.ts`, `api/src/index.ts`, `api/src/utils/index.ts`: TypeScript API package exposing typed contract bindings.
-- `bboard-cli/src/deploy-preprod-contract.ts`: Deterministic, single-attempt Preprod deployment script utilizing synchronized Dust wallet state.
-- `bboard-cli/src/midnight-wallet-provider.ts`: Preprod wallet provider with official keystore integration.
-- `bboard-ui/src/contexts/DeployedBoardContext.tsx`: Next.js context provider connected to the verified contract address with automatic environment fallback.
-- `bboard-ui/.env.preprod` & `bboard-ui/.env.example`: Preprod environment configurations with contract address `c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc`.
-- `bboard-ui/public/keys/` & `bboard-ui/public/zkir/`: Public proving keys and circuit intermediate representations for browser-side ZK proof generation.
-- `preprod-deployment-result.json` & `bboard-cli/preprod-deployment-result.json`: Canonical record of deployment transaction, block height, contract address, and explorer URL.
+- `medex-cli/src/deploy-preprod-contract.ts`: Deterministic, single-attempt Preprod deployment script utilizing synchronized Dust wallet state.
+- `medex-cli/src/midnight-wallet-provider.ts`: Preprod wallet provider with official keystore integration.
+- `medex-ui/src/contexts/DeployedBoardContext.tsx`: Next.js context provider connected to the verified contract address with automatic environment fallback.
+- `medex-ui/.env.preprod` & `medex-ui/.env.example`: Preprod environment configurations with contract address `c4e4778c4b3d516bd43569b30f7e1ca6dbea268c5e997bb7473f77c9f88085cc`.
+- `medex-ui/public/keys/` & `medex-ui/public/zkir/`: Public proving keys and circuit intermediate representations for browser-side ZK proof generation.
+- `preprod-deployment-result.json` & `medex-cli/preprod-deployment-result.json`: Canonical record of deployment transaction, block height, contract address, and explorer URL.
 - `README.md` & `PROPOSAL.md`: Authoritative project documentation reflecting verified deployment and test metrics.
 
 ### 2. Diagnostic & Verification Scripts (PRESERVED - Read-Only Tools)
