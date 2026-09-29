@@ -8,7 +8,7 @@
 [![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-Clinical_Design-0D9488?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Vitest](https://img.shields.io/badge/Vitest-14%2F14_Passing-2ea44f?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
-[![Lace Wallet](https://img.shields.io/badge/Lace_Wallet-Midnight_Preprod-4A154B?style=for-the-badge)](https://www.lace.io/)
+[![1AM Wallet](https://img.shields.io/badge/1AM_Wallet-Midnight_Preprod-4A154B?style=for-the-badge)](https://midnight.network/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 **MedEx (Private Medical Research Data Exchange)** is a zero-knowledge clinical data governance platform engineered on the **Midnight Network**. MedEx resolves the tension between medical research collaboration and patient privacy regulations (such as HIPAA and GDPR) by leveraging Compact smart medex-contracts, zero-knowledge proofs (ZK-SNARKs), and dual-state architecture. Healthcare institutions can safely register research cohorts, enforce cryptographic query quotas, and verify investigator credentials without ever exposing raw patient records, medical license secrets, or private decryption keys to public ledgers.
