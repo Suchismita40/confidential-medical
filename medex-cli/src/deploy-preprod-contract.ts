@@ -240,7 +240,7 @@ async function main() {
 
   console.log('3. Ready for on-chain contract deployment!');
 
-  const zkConfigPath = path.resolve(currentDir, '..', '..', 'contract', 'src', 'managed', 'medex');
+  const zkConfigPath = path.resolve(currentDir, '..', '..', 'medex-contract', 'src', 'managed', 'medex');
   const zkConfigProvider = new NodeZkConfigProvider<
     'registerDataset' | 'requestAccess' | 'grantPermission' | 'submitAccessProof' | 'renewAccessQuota' | 'revokeAccess'
   >(zkConfigPath);
