@@ -7,7 +7,7 @@
 [![Next.js 14.2](https://img.shields.io/badge/Next.js-14.2_App_Router-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-Clinical_Design-0D9488?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Vitest](https://img.shields.io/badge/Vitest-14%2F14_Passing-2ea44f?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-22%2F22_Passing-2ea44f?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![1AM Wallet](https://img.shields.io/badge/1AM_Wallet-Midnight_Preprod-4A154B?style=for-the-badge)](https://midnight.network/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
@@ -479,7 +479,7 @@ private-medical-research-data-exchange/
 │   └── workflows/
 │       ├── ci.yml                    # Automated GitHub Actions CI/CD Pipeline
 │       └── scan.yaml                 # Repository security & integrity scan
-├── api/                              # TypeScript Contract Bindings & API Layer
+├── medex-api/                        # TypeScript Contract Bindings & API Layer
 │   ├── src/
 │   │   ├── common-types.ts           # Core protocol types & interface definitions
 │   │   └── index.ts                  # Public API exports & circuit wrappers
@@ -550,7 +550,7 @@ The repository utilizes **GitHub Actions** (`.github/workflows/ci.yml`) to enfor
 │   ↓
 ├── 7. Typecheck & Lint Workspace      # Executes tsc --noEmit across all packages
 │   ↓
-├── 8. Run Vitest Test Suite (14)      # Executes 14/14 unit tests across medex-contract & wallet
+├── 8. Run Vitest Test Suite (22)      # Executes 22/22 unit tests across medex-contract & wallet
 │   ↓
 ├── 9. Build Next.js Production Bundle # Compiles optimized medex-ui distribution
 │   ↓
@@ -560,8 +560,8 @@ The repository utilizes **GitHub Actions** (`.github/workflows/ci.yml`) to enfor
 ### Configured Pipeline Stages:
 1. **Repository & Secret Verification**: Scans codebase for accidentally committed credentials or secrets.
 2. **Compact Circuit Compilation**: Invokes the Compact compiler to generate zero-knowledge proving keys and TypeScript bindings.
-3. **Static Analysis & Typechecking**: Runs `tsc --noEmit` across all workspace packages (`api`, `medex-contract`, `medex-cli`, `medex-ui`).
-4. **Automated Unit Testing**: Executes the full 14-test Vitest suite, verifying all circuit state machines and wallet lifecycle error handlers.
+3. **Static Analysis & Typechecking**: Runs `tsc --noEmit` across all workspace packages (`medex-api`, `medex-contract`, `medex-cli`, `medex-ui`).
+4. **Automated Unit Testing**: Executes the full 22-test Vitest suite, verifying all circuit state machines and wallet lifecycle error handlers.
 5. **Frontend Production Build**: Compiles the Next.js App Router application into an optimized static/SSR distribution.
 
 ---
@@ -585,7 +585,7 @@ The repository utilizes **GitHub Actions** (`.github/workflows/ci.yml`) to enfor
 - [x] Integration with Midnight Lace Wallet and unshielded address resolution.
 - [x] RPC channel recovery and stale session lifecycle management.
 - [x] Responsive clinical UI workstation with live telemetry and ZK inspector.
-- [x] 14/14 automated unit tests and CI/CD workflow pipeline.
+- [x] 22/22 automated unit tests and CI/CD workflow pipeline.
 - [x] Research-grade documentation, PROPOSAL.md, and visual walkthroughs.
 
 ### 🔭 Planned Enhancements
