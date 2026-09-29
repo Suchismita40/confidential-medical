@@ -170,13 +170,13 @@ export function PrivacyCenter() {
         </div>
 
         <div className="bg-nordic-bg rounded-xl border border-emerald-200 p-4 font-mono text-xs text-nordic-olive overflow-x-auto space-y-2">
-          <div className="text-emerald-950 font-bold">// 1. Circuit export for dataset registration on-chain</div>
+          <div className="text-emerald-950 font-bold">{"// 1. Circuit export for dataset registration on-chain"}</div>
           <div><span className="text-emerald-accent">export circuit</span> registerDataset(title: Bytes[32], category: Bytes[32], quota: Uint&lt;32&gt;): Void</div>
-          <div className="text-emerald-950 font-bold pt-2">// 2. Researcher requests access with quota limit</div>
+          <div className="text-emerald-950 font-bold pt-2">{"// 2. Researcher requests access with quota limit"}</div>
           <div><span className="text-emerald-accent">export circuit</span> requestAccess(datasetId: Bytes[32]): Void</div>
-          <div className="text-emerald-950 font-bold pt-2">// 3. Owner grants permission and sets query limit</div>
+          <div className="text-emerald-950 font-bold pt-2">{"// 3. Owner grants permission and sets query limit"}</div>
           <div><span className="text-emerald-accent">export circuit</span> grantPermission(researcherKey: Bytes[32], maxQueries: Uint&lt;32&gt;): Void</div>
-          <div className="text-emerald-950 font-bold pt-2">// 4. Researcher submits ZK proof of authorized access</div>
+          <div className="text-emerald-950 font-bold pt-2">{"// 4. Researcher submits ZK proof of authorized access"}</div>
           <div><span className="text-emerald-accent">export circuit</span> submitAccessProof(proofHash: Bytes[32]): Void</div>
         </div>
       </div>

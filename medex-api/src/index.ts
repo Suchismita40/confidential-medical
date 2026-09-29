@@ -1,4 +1,4 @@
-export { State } from "@midnight-ntwrk/medex-contract";
+export { State } from '@midnight-ntwrk/medex-contract';
 // Private Medical Research Data Exchange (MedEx) API
 // Copyright (C) Midnight Foundation
 

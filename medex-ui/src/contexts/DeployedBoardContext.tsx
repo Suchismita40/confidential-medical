@@ -407,8 +407,7 @@ export const DeployedBoardProvider: React.FC<{
       boardManagerRef.current = new BrowserDeployedBoardManager(logger);
     }
     return new Promise((resolve) => {
-      let sub: any;
-      sub = boardManagerRef.current!.resolve(PREPROD_CONTRACT_ADDRESS).subscribe({
+      const sub: any = boardManagerRef.current!.resolve(PREPROD_CONTRACT_ADDRESS).subscribe({
         next: (deployment) => {
           if (deployment.status === 'deployed') {
             apiRef.current = deployment.api;
@@ -961,7 +960,7 @@ export const DeployedBoardProvider: React.FC<{
         setState((prev) => ({
           ...prev,
           datasets: prev.datasets.map((d) =>
-            d.id === datasetId ? { ...d, status: 'REQUESTED' as AccessStatus } : d,
+            d.id === datasetId ? { ...d, status: 'REQUESTED' } : d,
           ),
           auditLogs: [auditLog, ...prev.auditLogs],
           txProgress: {
@@ -1052,7 +1051,7 @@ export const DeployedBoardProvider: React.FC<{
             d.id === datasetId
               ? {
                   ...d,
-                  status: 'GRANTED' as AccessStatus,
+                  status: 'GRANTED',
                   activeResearcherPk: targetResearcher,
                 }
               : d,
@@ -1331,7 +1330,7 @@ export const DeployedBoardProvider: React.FC<{
         setState((prev) => ({
           ...prev,
           datasets: prev.datasets.map((d) =>
-            d.id === datasetId ? { ...d, status: 'REVOKED' as AccessStatus } : d,
+            d.id === datasetId ? { ...d, status: 'REVOKED' } : d,
           ),
           auditLogs: [auditLog, ...prev.auditLogs],
           txProgress: {
